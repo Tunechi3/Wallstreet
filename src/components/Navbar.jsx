@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
-import { faCartShopping, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,13 +11,19 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <>
     <nav className="navbar">
       <div className="navbar-container">
         {/* Company Logo */}
         <div className="navbar-logo">
-          <span className="company-name">Wallstreet</span>
+          <Link to="/" className="company-name" onClick={closeMenu}>
+            Wallstreet
+          </Link>
         </div>
 
         {/* Hamburger Menu Button */}
@@ -27,21 +34,29 @@ const Navbar = () => {
         {/* Navigation Links */}
         <ul className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
           <li className="navbar-item">
-            <a href="#home" className="navbar-link" onClick={toggleMenu}>Home</a>
+            <Link to="/" className="navbar-link" onClick={closeMenu}>
+              Home
+            </Link>
           </li>
           <li className="navbar-item">
-            <a href="#about" className="navbar-link" onClick={toggleMenu}>Invest</a>
+            <Link to="/invest" className="navbar-link" onClick={closeMenu}>
+              Invest
+            </Link>
           </li>
           <li className="navbar-item">
-            <a href="#contact" className="navbar-link" onClick={toggleMenu}>Contact</a>
+            <Link to="/contact" className="navbar-link" onClick={closeMenu}>
+              Contact
+            </Link>
           </li>
           <li className="navbar-item">
-            <a href="#faq" className="navbar-link" onClick={toggleMenu}>FAQ</a>
+            <Link to="/faq" className="navbar-link" onClick={closeMenu}>
+              FAQ
+            </Link>
           </li>
           <li className="navbar-item">
-            <a href="#login" className="navbar-link" onClick={toggleMenu}>
+            <Link to="/login" className="navbar-link" onClick={closeMenu}>
               <FontAwesomeIcon icon={faUser} />Login
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
