@@ -81,6 +81,141 @@ const Aboutus = () => {
               </div>
           </section>
 
+          {/* Investment Plans Section */}
+          <section className="investment-plans">
+              <div className="investment-plans-container">
+                  <div className="plans-header">
+                      <h2 className="plans-title">Investment Plans</h2>
+                      <p className="plans-subtitle">Choose the plan that fits your investment goals. Higher investments yield greater weekly returns.</p>
+                  </div>
+
+                  <div className="plans-grid">
+                      <div className="plan-card">
+                          <div className="plan-badge">Starter</div>
+                          <h3 className="plan-name">Basic Plan</h3>
+                          <div className="plan-return">
+                              <span className="return-percentage">5%</span>
+                              <span className="return-label">Weekly Return</span>
+                          </div>
+                          <div className="plan-details">
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <circle cx="12" cy="12" r="10"></circle>
+                                      <polyline points="12 6 12 12 16 14"></polyline>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Duration</span>
+                                      <span className="detail-value">4 Weeks</span>
+                                  </div>
+                              </div>
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Minimum</span>
+                                      <span className="detail-value">$500</span>
+                                  </div>
+                              </div>
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Total Return</span>
+                                      <span className="detail-value">20%</span>
+                                  </div>
+                              </div>
+                          </div>
+                          <button className="plan-cta">Get Started</button>
+                      </div>
+
+                      <div className="plan-card featured">
+                          <div className="plan-badge popular">Popular</div>
+                          <h3 className="plan-name">Standard Plan</h3>
+                          <div className="plan-return">
+                              <span className="return-percentage">8%</span>
+                              <span className="return-label">Weekly Return</span>
+                          </div>
+                          <div className="plan-details">
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <circle cx="12" cy="12" r="10"></circle>
+                                      <polyline points="12 6 12 12 16 14"></polyline>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Duration</span>
+                                      <span className="detail-value">8 Weeks</span>
+                                  </div>
+                              </div>
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Minimum</span>
+                                      <span className="detail-value">$2,500</span>
+                                  </div>
+                              </div>
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Total Return</span>
+                                      <span className="detail-value">64%</span>
+                                  </div>
+                              </div>
+                          </div>
+                          <button className="plan-cta">Get Started</button>
+                      </div>
+
+                      <div className="plan-card">
+                          <div className="plan-badge premium">Premium</div>
+                          <h3 className="plan-name">Pro Plan</h3>
+                          <div className="plan-return">
+                              <span className="return-percentage">12%</span>
+                              <span className="return-label">Weekly Return</span>
+                          </div>
+                          <div className="plan-details">
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <circle cx="12" cy="12" r="10"></circle>
+                                      <polyline points="12 6 12 12 16 14"></polyline>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Duration</span>
+                                      <span className="detail-value">12 Weeks</span>
+                                  </div>
+                              </div>
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Minimum</span>
+                                      <span className="detail-value">$10,000</span>
+                                  </div>
+                              </div>
+                              <div className="plan-detail-item">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                  </svg>
+                                  <div>
+                                      <span className="detail-label">Total Return</span>
+                                      <span className="detail-value">144%</span>
+                                  </div>
+                              </div>
+                          </div>
+                          <button className="plan-cta">Get Started</button>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
           {/* Why Choose Wallstreet Section */}
           <section className="why-choose">
               <div className="why-choose-container">
@@ -206,6 +341,143 @@ const Aboutus = () => {
                               <circle cx="12" cy="12" r="3"></circle>
                           </svg>
                           <span>Regular Audits</span>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+          {/* Live Platform Stats Section */}
+          <section className="platform-stats">
+              <div className="platform-stats-container">
+                  <div className="stats-header">
+                      <h2 className="stats-title">Platform Statistics</h2>
+                      <p className="stats-subtitle">Real-time proof of our growing community and consistent performance</p>
+                  </div>
+
+                  <div className="stats-counters">
+                      <div className="stat-item">
+                          <div className="stat-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                              </svg>
+                          </div>
+                          <div className="stat-content">
+                              <div className="stat-number">$24.8M+</div>
+                              <div className="stat-label">Total Payouts</div>
+                              <div className="stat-description">Successfully distributed to investors</div>
+                          </div>
+                      </div>
+
+                      <div className="stat-divider"></div>
+
+                      <div className="stat-item">
+                          <div className="stat-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                  <circle cx="9" cy="7" r="4"></circle>
+                                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                              </svg>
+                          </div>
+                          <div className="stat-content">
+                              <div className="stat-number">18,542</div>
+                              <div className="stat-label">Active Investors</div>
+                              <div className="stat-description">Currently earning daily returns</div>
+                          </div>
+                      </div>
+
+                      <div className="stat-divider"></div>
+
+                      <div className="stat-item">
+                          <div className="stat-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                              </svg>
+                          </div>
+                          <div className="stat-content">
+                              <div className="stat-number">1.2M+</div>
+                              <div className="stat-label">Total Transactions</div>
+                              <div className="stat-description">Processed since platform launch</div>
+                          </div>
+                      </div>
+                  </div>
+
+                  {/* <div className="stats-footer">
+                      <div className="live-indicator">
+                          <span className="pulse-dot"></span>
+                          <span className="live-text">Live Data • Updated in Real-Time</span>
+                      </div>
+                  </div> */}
+              </div>
+          </section>
+
+          {/* Testimonials Section */}
+          <section className="testimonials">
+              <div className="testimonials-container">
+                  <div className="testimonials-header">
+                      <h2 className="testimonials-title">What Our Investors Say</h2>
+                      <p className="testimonials-subtitle">Real experiences from members of our investment community</p>
+                  </div>
+                  <div className="testimonials-grid">
+                      <div className="testimonial-item">
+                          <div className="testimonial-quote">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
+                              </svg>
+                          </div>
+                          <p className="testimonial-text">
+                              "As someone who's tried multiple investment platforms, Wallstreet Trade stands out for its professionalism and reliability. The security measures give me peace of mind."
+                          </p>
+                          <div className="testimonial-author">
+                              <div className="author-avatar">
+                                  <span>EP</span>
+                              </div>
+                              <div className="author-info">
+                                  <div className="author-name">Mommy Dayo</div>
+                                  <div className="author-detail">Investor since 2023</div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div className="testimonial-item">
+                          <div className="testimonial-quote">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
+                              </svg>
+                          </div>
+                          <p className="testimonial-text">
+                              "The expert management team really knows what they're doing. My portfolio has grown steadily and I appreciate the detailed reporting on all trading activities."
+                          </p>
+                          <div className="testimonial-author">
+                              <div className="author-avatar">
+                                  <span>DA</span>
+                              </div>
+                              <div className="author-info">
+                                  <div className="author-name">Daddy Dayo</div>
+                                  <div className="author-detail">Pro Plan Member</div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div className="testimonial-item">
+                          <div className="testimonial-quote">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
+                              </svg>
+                          </div>
+                          <p className="testimonial-text">
+                              "What impressed me most is the consistency. Week after week, the returns come in as promised. This has become my primary source of passive income."
+                          </p>
+                          <div className="testimonial-author">
+                              <div className="author-avatar">
+                                  <span>LM</span>
+                              </div>
+                              <div className="author-info">
+                                  <div className="author-name">Adekunle Gold</div>
+                                  <div className="author-detail">Standard Plan Member</div>
+                              </div>
+                          </div>
                       </div>
                   </div>
               </div>
