@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -170,7 +170,6 @@ const Login = () => {
         </div>
       </div>
     </div>
-    <Footer/>
     </>
   );
 };

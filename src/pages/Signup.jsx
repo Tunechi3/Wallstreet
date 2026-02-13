@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faPhone, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -263,7 +263,6 @@ const Signup = () => {
         </div>
       </div>
     </div>
-    <Footer/>
     </>
   );
 };
