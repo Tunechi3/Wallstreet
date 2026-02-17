@@ -3924,3 +3924,171 @@
     font-size: 0.75rem;
   }
 }
+
+/* ============================================
+   LOADING SCREEN STYLES
+   Add these to your index.css
+   ============================================ */
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f9fa 0%, #e8ecf0 100%);
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(85, 90, 105, 0.1);
+  border-top-color: #555a69;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { 
+    transform: rotate(360deg); 
+  }
+}
+
+.loading-screen p {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  color: #666;
+  margin: 0;
+}
+
+
+/* Alert Messages */
+.alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  animation: slideDown 0.3s ease;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add this to your index.css after your existing form-input styles */
+.signup-form .form-input,
+.login-form .form-input {
+  padding: 1rem 1rem 1rem 3rem !important;
+}
+
+.signup-form .phone-input,
+.login-form .phone-input {
+  padding-left: 1rem !important;
+}
+
+.signup-form .country-code-select,
+.login-form .country-code-select {
+  padding: 1rem 1rem 1rem 2.75rem !important;
+}
+
+/* Loading Spinner */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.optional-text {
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 400;
+}
+
+/* ============================================
+   USER CONTEXT NAVBAR STYLES
+   Add these styles to your index.css after .navbar-link:hover
+   ============================================ */
+
+/* User Avatar inside navbar-link */
+.navbar-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #555a69 0%, #7f88a7 100%);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Logout button styled as navbar-link */
+.navbar-logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .navbar-user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .navbar-logout-btn {
+    width: 100%;
+    text-align: left;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-user-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .navbar-logout-btn {
+    padding: 0.875rem 0;
+  }
+}
