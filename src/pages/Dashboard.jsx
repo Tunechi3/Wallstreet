@@ -813,7 +813,13 @@ const Dashboard = () => {
     setTimeout(() => setSecretCopied(false), 2000);
   };
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const handleNavigation = (section) => navigate(`/dashboard/${section}`);
+  const handleNavigation = (section) => {
+  // Close sidebar on mobile (≤1024px) when a nav item is selected
+  if (window.innerWidth <= 1024) {
+    setSidebarOpen(false);
+  }
+  navigate(`/dashboard/${section}`);
+};
   const handleLogout = async () => await logout();
   const copyReferralLink = () => {
     const referralLink = `https://wallstreettrade.com/ref/${user?.referralCode}`;
