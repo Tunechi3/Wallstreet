@@ -3954,7 +3954,6 @@
     transform: rotate(360deg); 
   }
 }
-
 .loading-screen p {
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
@@ -3962,7 +3961,6 @@
   color: #666;
   margin: 0;
 }
-
 
 /* Alert Messages */
 .alert {
