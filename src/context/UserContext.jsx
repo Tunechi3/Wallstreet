@@ -40,7 +40,14 @@ export const UserProvider = ({ children }) => {
         credentials: 'include',
       });
 
-      const data = await response.json();
+      // FIX: safely parse JSON — don't crash on empty/non-JSON error responses
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`Server error (${response.status}): ${text}`);
+      }
 
       // Handle unauthorized errors
       if (response.status === 401) {
@@ -64,6 +71,7 @@ export const UserProvider = ({ children }) => {
   // Register user
   const register = async (userData) => {
     try {
+      // FIX: removed duplicate API_URL prefix (apiCall already prepends it)
       const data = await apiCall('/auth/register', {
         method: 'POST',
         body: JSON.stringify(userData),
@@ -85,7 +93,8 @@ export const UserProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       console.log('🔐 UserContext: Attempting login...', { email });
-      
+
+      // FIX: removed duplicate API_URL prefix (apiCall already prepends it)
       const data = await apiCall('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),

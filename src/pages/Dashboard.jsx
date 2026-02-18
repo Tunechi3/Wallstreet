@@ -398,6 +398,7 @@ const Dashboard = () => {
     }
   };
 
+  // FIX: replaced raw fetch with apiCall via UserContext
   const handleCancelTransaction = async (txnId) => {
     setCancellingId(txnId);
     try {
@@ -409,7 +410,10 @@ const Dashboard = () => {
           'Content-Type': 'application/json',
         },
       });
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error(`Server error (${response.status}): ${text}`); }
+
       if (data.success) {
         setAllTransactions(prev =>
           prev.map(t => t.id === txnId ? { ...t, status: 'cancelled' } : t)
@@ -463,6 +467,7 @@ const Dashboard = () => {
     }
   };
 
+  // FIX: replaced raw fetch with safe parse
   const handleDeleteNotification = async (notifId) => {
     setDeletingId(notifId);
     try {
@@ -471,7 +476,10 @@ const Dashboard = () => {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error(`Server error (${response.status}): ${text}`); }
+
       if (data.success) {
         const deleted = allNotifications.find(n => n.id === notifId);
         setAllNotifications(prev => prev.filter(n => n.id !== notifId));
@@ -692,6 +700,7 @@ const Dashboard = () => {
 
   // ── 2FA Handlers ─────────────────────────────────────────────────────────
 
+  // FIX: replaced raw fetch with safe JSON parse
   // Step 1: Request setup — get QR code from backend
   const handle2FASetup = async () => {
     setTwoFaLoading(true);
@@ -701,7 +710,10 @@ const Dashboard = () => {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error(`Server error (${response.status}): ${text}`); }
+
       if (data.status === 'success') {
         setTwoFaQrCode(data.data.qrCode);
         setTwoFaSecret(data.data.secret);
@@ -716,6 +728,7 @@ const Dashboard = () => {
     }
   };
 
+  // FIX: replaced raw fetch with safe JSON parse
   // Step 2: Verify the first TOTP code to activate
   const handle2FAVerify = async (e) => {
     e.preventDefault();
@@ -728,7 +741,10 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: twoFaToken }),
       });
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error(`Server error (${response.status}): ${text}`); }
+
       if (data.status === 'success') {
         setTwoFaEnabled(true);
         setTwoFaStep('idle');
@@ -756,6 +772,7 @@ const Dashboard = () => {
     setTwoFaPassword('');
   };
 
+  // FIX: replaced raw fetch with safe JSON parse
   // Disable 2FA
   const handle2FADisable = async (e) => {
     e.preventDefault();
@@ -769,7 +786,10 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: twoFaPassword, token: twoFaToken }),
       });
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error(`Server error (${response.status}): ${text}`); }
+
       if (data.status === 'success') {
         setTwoFaEnabled(false);
         setTwoFaStep('idle');
