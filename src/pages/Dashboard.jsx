@@ -1150,7 +1150,7 @@ const Dashboard = () => {
                   <div className="card-content">
                     <p className="card-label">Total Balance</p>
                     <h2 className="card-value">${user.totalBalance?.toLocaleString() || '0.00'}</h2>
-                    <p className="card-change positive"><FontAwesomeIcon icon={faArrowUp} /> +12.5% this month</p>
+                    {/* <p className="card-change positive"><FontAwesomeIcon icon={faArrowUp} /></p> */}
                   </div>
                 </div>
                 <div className="overview-card">
