@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -25,28 +25,37 @@ import {
   faSave,
   faKey,
   faLock,
+  faLockOpen,
   faCreditCard,
   faCopy,
   faBolt,
   faCalendarDay,
   faCalendarWeek,
-  faCalendarAlt
+  faCalendarAlt,
+  faTrash,
+  faCheck,
+  faInfoCircle,
+  faExclamationTriangle,
+  faBellSlash,
+  faSpinner,
+  faEye,
+  faEyeSlash,
+  faTimesCircle,
+  faMobileAlt,
+  faQrcode,
 } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../context/UserContext';
 import { toast } from 'react-toastify';
 import '../Dashboard.css';
+import API_URL from '../config';
 
-// ─── Dummy wallet addresses ──────────────────────────────────────────────────
 const WALLET_ADDRESSES = {
   'Bitcoin (BTC)':  'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
   'Ethereum (ETH)': '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
   'USDT (TRC20)':   'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE',
 };
 
-// ─── 8 Investment Plans ───────────────────────────────────────────────────────
-// 3 Daily | 3 for 72-Hours | 2 Weekly | 1 Monthly
 const INVESTMENT_PLANS = [
-  // ── DAILY PLANS (3) ────────────────────────────────────────────────────────
   {
     id: 1,
     name: 'Daily Starter',
@@ -101,8 +110,6 @@ const INVESTMENT_PLANS = [
     badgeClass: 'badge-high',
     color: '#8e44ad',
   },
-
-  // ── 72-HOUR PLANS (3) ───────────────────────────────────────────────────────
   {
     id: 4,
     name: '72H Bronze',
@@ -157,8 +164,6 @@ const INVESTMENT_PLANS = [
     badgeClass: 'badge-high',
     color: '#D4AF37',
   },
-
-  // ── WEEKLY PLANS (2) ────────────────────────────────────────────────────────
   {
     id: 7,
     name: 'Weekly Pro',
@@ -195,8 +200,6 @@ const INVESTMENT_PLANS = [
     badgeClass: 'badge-high',
     color: '#c0392b',
   },
-
-  // ── MONTHLY PLAN (1) ────────────────────────────────────────────────────────
   {
     id: 9,
     name: 'Monthly Titan',
@@ -217,6 +220,35 @@ const INVESTMENT_PLANS = [
   },
 ];
 
+const NOTIF_META = {
+  success:     { icon: faCheckCircle,        color: '#27ae60' },
+  info:        { icon: faInfoCircle,          color: '#3498db' },
+  warning:     { icon: faExclamationTriangle, color: '#f39c12' },
+  error:       { icon: faExclamationCircle,   color: '#e74c3c' },
+  account:     { icon: faUserCircle,          color: '#8e44ad' },
+  transaction: { icon: faHistory,             color: '#2980b9' },
+  investment:  { icon: faChartLine,           color: '#D4AF37' },
+  referral:    { icon: faUsers,               color: '#16a085' },
+  security:    { icon: faShield,              color: '#e74c3c' },
+  system:      { icon: faBell,                color: '#555a69' },
+  promotion:   { icon: faBolt,                color: '#d35400' },
+};
+
+const getNotifMeta = (type) => NOTIF_META[type] || NOTIF_META.info;
+
+const timeAgo = (dateStr) => {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days  = Math.floor(diff / 86400000);
+  if (mins < 1)   return 'Just now';
+  if (mins < 60)  return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7)   return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -229,6 +261,12 @@ const Dashboard = () => {
     createDeposit,
     createWithdrawal,
     createInvestment,
+    getNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    getTransactions,
+    updateProfile,
+    changePassword,
   } = useUser();
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -238,12 +276,10 @@ const Dashboard = () => {
   const [activeInvestments, setActiveInvestments] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  // Deposit form states
   const [depositAmount, setDepositAmount] = useState('');
   const [depositMethod, setDepositMethod] = useState('Bitcoin (BTC)');
   const [depositWallet, setDepositWallet] = useState('');
 
-  // Withdrawal form states
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [withdrawMethod, setWithdrawMethod] = useState('Bitcoin (BTC)');
   const [withdrawWallet, setWithdrawWallet] = useState('');
@@ -251,17 +287,63 @@ const Dashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copiedKey, setCopiedKey] = useState(null);
 
-  // ── Investment Modal State ──────────────────────────────────────────────────
-  const [investModal, setInvestModal] = useState(null);   // plan object or null
+  // ── Profile form state ─────────────────────────────────────────────────────
+  const [profileName, setProfileName] = useState('');
+  const [profilePhone, setProfilePhone] = useState('');
+  const [profileCountry, setProfileCountry] = useState('');
+  const [profileAddress, setProfileAddress] = useState('');
+  const [profileSubmitting, setProfileSubmitting] = useState(false);
+
+  // ── Password form state ────────────────────────────────────────────────────
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false);
+
+
+  // ── 2FA state ─────────────────────────────────────────────────────────────
+  // twoFaStep: 'idle' | 'setup' | 'verify' | 'enabled' | 'disabling'
+  const [twoFaStep, setTwoFaStep]         = useState('idle');
+  const [twoFaQrCode, setTwoFaQrCode]     = useState('');
+  const [twoFaSecret, setTwoFaSecret]     = useState('');
+  const [twoFaToken, setTwoFaToken]       = useState('');
+  const [twoFaPassword, setTwoFaPassword] = useState('');
+  const [twoFaLoading, setTwoFaLoading]   = useState(false);
+  const [twoFaEnabled, setTwoFaEnabled]   = useState(false);
+  const [secretCopied, setSecretCopied]   = useState(false);
+  const [investModal, setInvestModal] = useState(null);
   const [investAmount, setInvestAmount] = useState('');
   const [investSubmitting, setInvestSubmitting] = useState(false);
   const [investError, setInvestError] = useState('');
   const [investSuccess, setInvestSuccess] = useState('');
 
-  // ── Category filter for plans ──────────────────────────────────────────────
   const [planFilter, setPlanFilter] = useState('all');
 
+  const [allNotifications, setAllNotifications] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [notifFilter, setNotifFilter] = useState('all');
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [deletingId, setDeletingId] = useState(null);
+  const [markingAllRead, setMarkingAllRead] = useState(false);
+
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [txnLoading, setTxnLoading] = useState(false);
+  const [txnFilter, setTxnFilter] = useState('all');
+  const [txnDetailModal, setTxnDetailModal] = useState(null);
+  const [cancellingId, setCancellingId] = useState(null);
+
   useEffect(() => { loadDashboardData(); }, []);
+
+  // Sync profile form fields whenever user data loads/changes
+  useEffect(() => {
+    if (user) {
+      setProfileName(user.name || '');
+      setProfilePhone(user.phone || '');
+      setProfileCountry(user.country || '');
+      setProfileAddress(user.address || '');
+      setTwoFaEnabled(!!user.twoFactorEnabled);
+    }
+  }, [user]);
 
   const loadDashboardData = async () => {
     try {
@@ -271,7 +353,9 @@ const Dashboard = () => {
         setDashboardData(result.data);
         setActiveInvestments(result.data.activeInvestments || []);
         setTransactions(result.data.recentTransactions || []);
-        setNotifications(result.data.notifications || []);
+        const dashNotifs = result.data.notifications || [];
+        setNotifications(dashNotifs);
+        setUnreadCount(dashNotifs.length);
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -280,13 +364,168 @@ const Dashboard = () => {
     }
   };
 
+  const loadAllNotifications = async () => {
+    setNotifLoading(true);
+    try {
+      const result = await getNotifications();
+      if (result.success) {
+        const notifs = result.data || [];
+        setAllNotifications(notifs);
+        setUnreadCount(notifs.filter(n => !n.isRead).length);
+      } else {
+        toast.error('Failed to load notifications');
+      }
+    } catch (err) {
+      toast.error('Error loading notifications');
+    } finally {
+      setNotifLoading(false);
+    }
+  };
+
+  const loadAllTransactions = async () => {
+    setTxnLoading(true);
+    try {
+      const result = await getTransactions();
+      if (result.success) {
+        setAllTransactions(result.data || []);
+      } else {
+        toast.error('Failed to load transactions');
+      }
+    } catch (err) {
+      toast.error('Error loading transactions');
+    } finally {
+      setTxnLoading(false);
+    }
+  };
+
+  const handleCancelTransaction = async (txnId) => {
+    setCancellingId(txnId);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/transactions/${txnId}/cancel`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setAllTransactions(prev =>
+          prev.map(t => t.id === txnId ? { ...t, status: 'cancelled' } : t)
+        );
+        if (txnDetailModal?.id === txnId) {
+          setTxnDetailModal(prev => ({ ...prev, status: 'cancelled' }));
+        }
+        toast.success('Transaction cancelled successfully');
+        await refreshUser();
+      } else {
+        toast.error(data.message || 'Failed to cancel transaction');
+      }
+    } catch (err) {
+      toast.error('Error cancelling transaction');
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  const handleMarkAsRead = async (notifId) => {
+    try {
+      const result = await markNotificationAsRead(notifId);
+      if (result.success) {
+        setAllNotifications(prev =>
+          prev.map(n => n.id === notifId ? { ...n, isRead: true } : n)
+        );
+        setUnreadCount(prev => Math.max(0, prev - 1));
+        setNotifications(prev => prev.filter(n => n.id !== notifId));
+      }
+    } catch (err) {
+      toast.error('Failed to mark as read');
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    setMarkingAllRead(true);
+    try {
+      const result = await markAllNotificationsAsRead();
+      if (result.success) {
+        setAllNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        setUnreadCount(0);
+        setNotifications([]);
+        toast.success('All notifications marked as read');
+      } else {
+        toast.error('Failed to mark all as read');
+      }
+    } catch (err) {
+      toast.error('Error marking notifications as read');
+    } finally {
+      setMarkingAllRead(false);
+    }
+  };
+
+  const handleDeleteNotification = async (notifId) => {
+    setDeletingId(notifId);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/notifications/${notifId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.success) {
+        const deleted = allNotifications.find(n => n.id === notifId);
+        setAllNotifications(prev => prev.filter(n => n.id !== notifId));
+        if (deleted && !deleted.isRead) {
+          setUnreadCount(prev => Math.max(0, prev - 1));
+          setNotifications(prev => prev.filter(n => n.id !== notifId));
+        }
+        toast.success('Notification deleted');
+      } else {
+        toast.error('Failed to delete notification');
+      }
+    } catch (err) {
+      toast.error('Error deleting notification');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const goToNotifications = () => {
+    handleNavigation('notifications');
+  };
+
+  const activeSection = (() => {
+    const path = location.pathname.split('/').pop();
+    return path === 'dashboard' ? 'overview' : path;
+  })();
+
+  useEffect(() => {
+    if (activeSection === 'notifications') {
+      loadAllNotifications();
+    }
+    if (activeSection === 'transactions') {
+      loadAllTransactions();
+    }
+  }, [activeSection]);
+
+  const filteredNotifications = allNotifications.filter(n => {
+    if (notifFilter === 'unread') return !n.isRead;
+    if (notifFilter === 'read')   return n.isRead;
+    return true;
+  });
+
+  const filteredTransactions = allTransactions.filter(t => {
+    if (txnFilter === 'all') return true;
+    if (txnFilter === 'earning') return t.type === 'earning' || t.type === 'referral_bonus';
+    return t.type === txnFilter;
+  });
+
   const copyToClipboard = (text, key) => {
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  // ── Invest Now handler ──────────────────────────────────────────────────────
   const openInvestModal = (plan) => {
     setInvestModal(plan);
     setInvestAmount('');
@@ -347,7 +586,6 @@ const Dashboard = () => {
     }
   };
 
-  // ── Deposit handler ─────────────────────────────────────────────────────────
   const handleDeposit = async (e) => {
     e.preventDefault();
     if (!depositAmount || parseFloat(depositAmount) < 100) {
@@ -371,7 +609,6 @@ const Dashboard = () => {
     }
   };
 
-  // ── Withdrawal handler ──────────────────────────────────────────────────────
   const handleWithdrawal = async (e) => {
     e.preventDefault();
     if (!withdrawAmount || parseFloat(withdrawAmount) < 50) {
@@ -400,11 +637,161 @@ const Dashboard = () => {
     }
   };
 
-  const getActiveSection = () => {
-    const path = location.pathname.split('/').pop();
-    return path === 'dashboard' ? 'overview' : path;
+  // ── Profile save handler ───────────────────────────────────────────────────
+  const handleProfileSave = async (e) => {
+    e.preventDefault();
+    setProfileSubmitting(true);
+    try {
+      const result = await updateProfile({
+        name: profileName,
+        phone: profilePhone,
+        country: profileCountry,
+        address: profileAddress,
+      });
+      if (result.status === 'success') {
+        toast.success('Profile updated successfully!');
+      } else {
+        toast.error(result.message || 'Failed to update profile');
+      }
+    } catch (err) {
+      toast.error('Error updating profile');
+    } finally {
+      setProfileSubmitting(false);
+    }
   };
-  const activeSection = getActiveSection();
+
+  // ── Password change handler ────────────────────────────────────────────────
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error('New password must be at least 8 characters');
+      return;
+    }
+    setPasswordSubmitting(true);
+    try {
+      const result = await changePassword(currentPassword, newPassword, confirmPassword);
+      if (result.status === 'success') {
+        toast.success('Password changed successfully!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        toast.error(result.message || 'Failed to change password');
+      }
+    } catch (err) {
+      toast.error('Error changing password');
+    } finally {
+      setPasswordSubmitting(false);
+    }
+  };
+
+
+  // ── 2FA Handlers ─────────────────────────────────────────────────────────
+
+  // Step 1: Request setup — get QR code from backend
+  const handle2FASetup = async () => {
+    setTwoFaLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/auth/2fa/setup`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        setTwoFaQrCode(data.data.qrCode);
+        setTwoFaSecret(data.data.secret);
+        setTwoFaStep('setup');
+      } else {
+        toast.error(data.message || 'Failed to initiate 2FA setup');
+      }
+    } catch (err) {
+      toast.error('Error setting up 2FA');
+    } finally {
+      setTwoFaLoading(false);
+    }
+  };
+
+  // Step 2: Verify the first TOTP code to activate
+  const handle2FAVerify = async (e) => {
+    e.preventDefault();
+    if (!twoFaToken || twoFaToken.length !== 6) { toast.error('Please enter the 6-digit code from your app'); return; }
+    setTwoFaLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/auth/2fa/verify`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: twoFaToken }),
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        setTwoFaEnabled(true);
+        setTwoFaStep('idle');
+        setTwoFaQrCode('');
+        setTwoFaSecret('');
+        setTwoFaToken('');
+        toast.success('Two-factor authentication enabled successfully!');
+        await refreshUser();
+      } else {
+        toast.error(data.message || 'Invalid code. Please try again.');
+      }
+    } catch (err) {
+      toast.error('Error verifying 2FA code');
+    } finally {
+      setTwoFaLoading(false);
+    }
+  };
+
+  // Cancel setup flow
+  const handle2FACancel = () => {
+    setTwoFaStep('idle');
+    setTwoFaQrCode('');
+    setTwoFaSecret('');
+    setTwoFaToken('');
+    setTwoFaPassword('');
+  };
+
+  // Disable 2FA
+  const handle2FADisable = async (e) => {
+    e.preventDefault();
+    if (!twoFaPassword) { toast.error('Please enter your password'); return; }
+    if (!twoFaToken || twoFaToken.length !== 6) { toast.error('Please enter your current 6-digit 2FA code'); return; }
+    setTwoFaLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/auth/2fa/disable`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: twoFaPassword, token: twoFaToken }),
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        setTwoFaEnabled(false);
+        setTwoFaStep('idle');
+        setTwoFaToken('');
+        setTwoFaPassword('');
+        toast.success('Two-factor authentication disabled.');
+        await refreshUser();
+      } else {
+        toast.error(data.message || 'Failed to disable 2FA');
+      }
+    } catch (err) {
+      toast.error('Error disabling 2FA');
+    } finally {
+      setTwoFaLoading(false);
+    }
+  };
+
+  const copySecret = () => {
+    navigator.clipboard.writeText(twoFaSecret);
+    setSecretCopied(true);
+    setTimeout(() => setSecretCopied(false), 2000);
+  };
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleNavigation = (section) => navigate(`/dashboard/${section}`);
   const handleLogout = async () => await logout();
@@ -414,7 +801,6 @@ const Dashboard = () => {
     toast.success('Referral link copied to clipboard!');
   };
 
-  // ── Filtered plans ──────────────────────────────────────────────────────────
   const filteredPlans = planFilter === 'all'
     ? INVESTMENT_PLANS
     : INVESTMENT_PLANS.filter(p => p.category === planFilter);
@@ -438,7 +824,6 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
 
-      {/* ── Invest Now Modal ─────────────────────────────────────────────────── */}
       {investModal && (
         <div className="invest-modal-overlay" onClick={closeInvestModal}>
           <div className="invest-modal" onClick={(e) => e.stopPropagation()}>
@@ -548,7 +933,92 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* ── Sidebar overlay for mobile ──────────────────────────────────────── */}
+      {txnDetailModal && (
+        <div className="invest-modal-overlay" onClick={() => setTxnDetailModal(null)}>
+          <div className="invest-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="invest-modal-header">
+              <div className="invest-modal-title">
+                <div className="invest-modal-icon" style={{ background: '#555a69' }}>
+                  <FontAwesomeIcon icon={faHistory} />
+                </div>
+                <div>
+                  <h3>Transaction Details</h3>
+                  <span className={`status-badge ${txnDetailModal.status}`}>{txnDetailModal.status}</span>
+                </div>
+              </div>
+              <button className="invest-modal-close" onClick={() => setTxnDetailModal(null)}>
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
+            <div className="invest-modal-body">
+              <div className="txn-detail-grid">
+                <div className="txn-detail-row">
+                  <span className="txn-detail-label">Type: </span>
+                  <span className="txn-detail-value">
+                    <span className={`transaction-type ${txnDetailModal.type}`}>
+                      {txnDetailModal.type?.charAt(0).toUpperCase() + txnDetailModal.type?.slice(1)}
+                    </span>
+                  </span>
+                </div>
+                <div className="txn-detail-row">
+                  <span className="txn-detail-label">Amount: </span>
+                  <span className="txn-detail-value" style={{ fontWeight: 600 }}>
+                    {txnDetailModal.type === 'withdrawal' || txnDetailModal.type === 'investment' ? '-' : '+'}
+                    ${txnDetailModal.amount?.toLocaleString()}
+                  </span>
+                </div>
+                <div className="txn-detail-row">
+                  <span className="txn-detail-label">Method: </span>
+                  <span className="txn-detail-value">{txnDetailModal.method || 'N/A'}</span>
+                </div>
+                <div className="txn-detail-row">
+                  <span className="txn-detail-label">Status: </span>
+                  <span className="txn-detail-value">
+                    <span className={`status-badge ${txnDetailModal.status}`}>{txnDetailModal.status}</span>
+                  </span>
+                </div>
+                <div className="txn-detail-row">
+                  <span className="txn-detail-label">Date: </span>
+                  <span className="txn-detail-value">{txnDetailModal.date}</span>
+                </div>
+                {txnDetailModal.description && (
+                  <div className="txn-detail-row">
+                    <span className="txn-detail-label">Description: </span>
+                    <span className="txn-detail-value">{txnDetailModal.description}</span>
+                  </div>
+                )}
+                {txnDetailModal.walletAddress && (
+                  <div className="txn-detail-row">
+                    <span className="txn-detail-label">Wallet Address: </span>
+                    <span className="txn-detail-value txn-detail-hash">{txnDetailModal.walletAddress}</span>
+                  </div>
+                )}
+                {txnDetailModal.transactionHash && (
+                  <div className="txn-detail-row">
+                    <span className="txn-detail-label">TX Hash</span>
+                    <span className="txn-detail-value txn-detail-hash">{txnDetailModal.transactionHash}</span>
+                  </div>
+                )}
+              </div>
+
+              {txnDetailModal.status === 'pending' && (
+                <button
+                  className="btn-primary btn-block"
+                  style={{ background: '#e74c3c', marginTop: '1.25rem' }}
+                  onClick={() => handleCancelTransaction(txnDetailModal.id)}
+                  disabled={cancellingId === txnDetailModal.id}
+                >
+                  {cancellingId === txnDetailModal.id
+                    ? <><FontAwesomeIcon icon={faSpinner} spin /> Cancelling…</>
+                    : <><FontAwesomeIcon icon={faTimesCircle} /> Cancel Transaction</>
+                  }
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {sidebarOpen && (
         <div
           className="sidebar-overlay"
@@ -556,7 +1026,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* ── Sidebar ───────────────────────────────────────────────────────────── */}
       <aside className={`dashboard-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h2 className="sidebar-logo">Wallstreet</h2>
@@ -596,7 +1065,7 @@ const Dashboard = () => {
           <button className={`nav-item ${activeSection === 'notifications' ? 'active' : ''}`} onClick={() => handleNavigation('notifications')}>
             <FontAwesomeIcon icon={faBell} />
             {sidebarOpen && <span>Notifications</span>}
-            {notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
+            {unreadCount > 0 && <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>}
           </button>
           <button className={`nav-item ${activeSection === 'profile' ? 'active' : ''}`} onClick={() => handleNavigation('profile')}>
             <FontAwesomeIcon icon={faUserCircle} />
@@ -613,9 +1082,7 @@ const Dashboard = () => {
         </nav>
       </aside>
 
-      {/* ── Main Content ──────────────────────────────────────────────────────── */}
       <main className={`dashboard-main ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-        {/* Top Bar */}
         <div className="dashboard-topbar">
           <div className="topbar-left">
             <button className="mobile-menu-toggle" onClick={toggleSidebar}>
@@ -626,6 +1093,17 @@ const Dashboard = () => {
             </h1>
           </div>
           <div className="topbar-right">
+            <button
+              className="topbar-notif-btn"
+              onClick={goToNotifications}
+              title="Notifications"
+            >
+              <FontAwesomeIcon icon={faBell} />
+              {unreadCount > 0 && (
+                <span className="topbar-notif-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
+              )}
+            </button>
+
             <div className="user-profile">
               <div className="user-avatar">{user.name.charAt(0)}</div>
               <div className="user-info">
@@ -636,10 +1114,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Content Area */}
         <div className="dashboard-content">
 
-          {/* ── Overview ───────────────────────────────────────────────────── */}
           {activeSection === 'overview' && (
             <div className="overview-section">
               <div className="overview-cards">
@@ -782,10 +1258,8 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Investments ─────────────────────────────────────────────────── */}
           {activeSection === 'investments' && (
             <div className="investments-section">
-              {/* Active investments */}
               <div className="section-card">
                 <h3>My Active Investments</h3>
                 <div className="investments-list">
@@ -824,7 +1298,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* ── Available Plans ─────────────────────────────────────────── */}
               <div className="section-card">
                 <div className="section-header">
                   <h3>Available Investment Plans</h3>
@@ -847,7 +1320,6 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* Category headings + cards */}
                 {['daily', '72hours', 'weekly', 'monthly'].map(cat => {
                   const catPlans = filteredPlans.filter(p => p.category === cat);
                   if (catPlans.length === 0) return null;
@@ -882,13 +1354,10 @@ const Dashboard = () => {
                               </div>
                               <span className={`plan-badge ${plan.badgeClass}`}>{plan.badge}</span>
                             </div>
-
                             <div className="plan-return-display" style={{ color: plan.color }}>
                               <span className="plan-return-rate">{plan.returnLabel}</span>
                             </div>
-
                             <p className="plan-description">{plan.description}</p>
-
                             <div className="plan-body">
                               <div className="plan-detail">
                                 <span className="plan-label">Min Amount</span>
@@ -909,7 +1378,6 @@ const Dashboard = () => {
                                 <span className="plan-value" style={{ color: plan.color, fontWeight: 700 }}>{plan.totalReturn}%</span>
                               </div>
                             </div>
-
                             <button
                               className="btn-invest-now"
                               style={{ background: plan.color }}
@@ -927,7 +1395,6 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Wallet ──────────────────────────────────────────────────────── */}
           {activeSection === 'wallet' && (
             <div className="wallet-section">
               <div className="wallet-overview">
@@ -987,7 +1454,6 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Deposit ─────────────────────────────────────────────────────── */}
           {activeSection === 'deposit' && (
             <div className="deposit-section">
               <div className="section-card">
@@ -1014,22 +1480,6 @@ const Dashboard = () => {
                           <label htmlFor={method}><FontAwesomeIcon icon={faCreditCard} /><span>{method}</span></label>
                         </div>
                       ))}
-                      {/* ── Bank Transfer commented out ──────────────────────
-                      <div className="payment-method">
-                        <input 
-                          type="radio" 
-                          name="payment" 
-                          id="bank"
-                          value="Bank Transfer"
-                          checked={depositMethod === 'Bank Transfer'}
-                          onChange={(e) => setDepositMethod(e.target.value)}
-                        />
-                        <label htmlFor="bank">
-                          <FontAwesomeIcon icon={faCreditCard} />
-                          <span>Bank Transfer</span>
-                        </label>
-                      </div>
-                      ─────────────────────────────────────────────────────── */}
                     </div>
                   </div>
                   {WALLET_ADDRESSES[depositMethod] && (
@@ -1087,7 +1537,6 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Withdraw ────────────────────────────────────────────────────── */}
           {activeSection === 'withdraw' && (
             <div className="withdraw-section">
               <div className="section-card">
@@ -1111,7 +1560,6 @@ const Dashboard = () => {
                       <option>Bitcoin (BTC)</option>
                       <option>Ethereum (ETH)</option>
                       <option>USDT (TRC20)</option>
-                      {/* <option>Bank Transfer</option> */}
                     </select>
                   </div>
                   {WALLET_ADDRESSES[withdrawMethod] && (
@@ -1161,74 +1609,223 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Transactions ────────────────────────────────────────────────── */}
           {activeSection === 'transactions' && (
             <div className="transactions-section">
               <div className="section-card">
                 <div className="section-header">
                   <h3>Transaction History</h3>
                   <div className="filter-buttons">
-                    <button className="filter-btn active">All</button>
-                    <button className="filter-btn">Deposits</button>
-                    <button className="filter-btn">Withdrawals</button>
-                    <button className="filter-btn">Earnings</button>
+                    {[
+                      { key: 'all',        label: 'All' },
+                      { key: 'deposit',    label: 'Deposits' },
+                      { key: 'withdrawal', label: 'Withdrawals' },
+                      { key: 'earning',    label: 'Earnings' },
+                    ].map(f => (
+                      <button
+                        key={f.key}
+                        className={`filter-btn ${txnFilter === f.key ? 'active' : ''}`}
+                        onClick={() => setTxnFilter(f.key)}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <div className="transactions-table">
-                  <table>
-                    <thead>
-                      <tr><th>Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th>Action</th></tr>
-                    </thead>
-                    <tbody>
-                      {transactions.length > 0 ? (
-                        transactions.map(transaction => (
-                          <tr key={transaction.id}>
-                            <td><span className={`transaction-type ${transaction.type}`}>{transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</span></td>
-                            <td className="amount">{transaction.type === 'withdrawal' || transaction.type === 'investment' ? '-' : '+'}${transaction.amount?.toLocaleString()}</td>
-                            <td>{transaction.method}</td>
-                            <td><span className={`status-badge ${transaction.status}`}>{transaction.status}</span></td>
-                            <td>{transaction.date}</td>
-                            <td><button className="btn-icon"><FontAwesomeIcon icon={faDownload} /></button></td>
+
+                {txnLoading ? (
+                  <div className="notif-loading">
+                    <FontAwesomeIcon icon={faSpinner} spin />
+                    <p>Loading transactions…</p>
+                  </div>
+                ) : (
+                  <div className="transactions-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Type</th>
+                          <th>Amount</th>
+                          <th>Method</th>
+                          <th>Status</th>
+                          <th>Date</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredTransactions.length > 0 ? (
+                          filteredTransactions.map(transaction => (
+                            <tr key={transaction.id}>
+                              <td>
+                                <span className={`transaction-type ${transaction.type}`}>
+                                  {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                                </span>
+                              </td>
+                              <td className="amount">
+                                {transaction.type === 'withdrawal' || transaction.type === 'investment' ? '-' : '+'}
+                                ${transaction.amount?.toLocaleString()}
+                              </td>
+                              <td>{transaction.method || 'N/A'}</td>
+                              <td>
+                                <span className={`status-badge ${transaction.status}`}>{transaction.status}</span>
+                              </td>
+                              <td>{transaction.date}</td>
+                              <td>
+                                <button
+                                  className="btn-icon"
+                                  title="View details"
+                                  onClick={() => setTxnDetailModal(transaction)}
+                                >
+                                  <FontAwesomeIcon icon={faEye} />
+                                </button>
+                                {transaction.status === 'pending' && (
+                                  <button
+                                    className="btn-icon"
+                                    title="Cancel transaction"
+                                    style={{ color: '#e74c3c', marginLeft: '0.25rem' }}
+                                    onClick={() => handleCancelTransaction(transaction.id)}
+                                    disabled={cancellingId === transaction.id}
+                                  >
+                                    {cancellingId === transaction.id
+                                      ? <FontAwesomeIcon icon={faSpinner} spin />
+                                      : <FontAwesomeIcon icon={faTimesCircle} />
+                                    }
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="6" className="no-data">
+                              {txnFilter === 'all'
+                                ? 'No transactions yet'
+                                : `No ${txnFilter} transactions found`}
+                            </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr><td colSpan="6" className="no-data">No transactions yet</td></tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {/* ── Notifications ────────────────────────────────────────────────── */}
           {activeSection === 'notifications' && (
             <div className="notifications-section">
               <div className="section-card">
                 <div className="section-header">
-                  <h3>Notifications</h3>
-                  <button className="btn-text">Mark all as read</button>
+                  <div className="notif-header-left">
+                    <h3>Notifications</h3>
+                    {unreadCount > 0 && (
+                      <span className="notif-unread-pill">{unreadCount} unread</span>
+                    )}
+                  </div>
+                  <div className="notif-header-actions">
+                    {unreadCount > 0 && (
+                      <button
+                        className="btn-text notif-mark-all-btn"
+                        onClick={handleMarkAllAsRead}
+                        disabled={markingAllRead}
+                      >
+                        {markingAllRead
+                          ? <><FontAwesomeIcon icon={faSpinner} spin /> Marking…</>
+                          : <><FontAwesomeIcon icon={faCheck} /> Mark all as read</>
+                        }
+                      </button>
+                    )}
+                  </div>
                 </div>
+
+                <div className="notif-filter-tabs">
+                  {[
+                    { key: 'all',    label: 'All' },
+                    { key: 'unread', label: 'Unread' },
+                    { key: 'read',   label: 'Read' },
+                  ].map(f => (
+                    <button
+                      key={f.key}
+                      className={`notif-tab ${notifFilter === f.key ? 'active' : ''}`}
+                      onClick={() => setNotifFilter(f.key)}
+                    >
+                      {f.label}
+                      {f.key === 'unread' && unreadCount > 0 && (
+                        <span className="notif-tab-count">{unreadCount}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
                 <div className="notifications-list">
-                  {notifications.length > 0 ? (
-                    notifications.map(notification => (
-                      <div key={notification.id} className={`notification-item ${notification.type}`}>
-                        <FontAwesomeIcon icon={notification.type === 'success' ? faCheckCircle : faExclamationCircle} className="notification-icon" />
-                        <div className="notification-content">
-                          <p className="notification-message">{notification.message}</p>
-                          <p className="notification-time">{notification.time}</p>
+                  {notifLoading ? (
+                    <div className="notif-loading">
+                      <FontAwesomeIcon icon={faSpinner} spin />
+                      <p>Loading notifications…</p>
+                    </div>
+                  ) : filteredNotifications.length > 0 ? (
+                    filteredNotifications.map(notification => {
+                      const meta = getNotifMeta(notification.type);
+                      return (
+                        <div
+                          key={notification.id}
+                          className={`notification-item ${notification.type} ${!notification.isRead ? 'unread' : ''}`}
+                        >
+                          <div
+                            className="notification-icon-wrap"
+                            style={{ color: meta.color, background: meta.color + '18' }}
+                          >
+                            <FontAwesomeIcon icon={meta.icon} className="notification-icon" />
+                          </div>
+
+                          <div className="notification-content">
+                            {notification.title && (
+                              <p className="notification-title">{notification.title}</p>
+                            )}
+                            <p className="notification-message">{notification.message}</p>
+                            <p className="notification-time">{timeAgo(notification.createdAt)}</p>
+                          </div>
+
+                          <div className="notification-actions">
+                            {!notification.isRead && (
+                              <button
+                                className="notif-action-btn notif-read-btn"
+                                title="Mark as read"
+                                onClick={() => handleMarkAsRead(notification.id)}
+                              >
+                                <FontAwesomeIcon icon={faCheck} />
+                              </button>
+                            )}
+                            <button
+                              className="notif-action-btn notif-delete-btn"
+                              title="Delete"
+                              onClick={() => handleDeleteNotification(notification.id)}
+                              disabled={deletingId === notification.id}
+                            >
+                              {deletingId === notification.id
+                                ? <FontAwesomeIcon icon={faSpinner} spin />
+                                : <FontAwesomeIcon icon={faTrash} />
+                              }
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
-                    <p className="no-data">No notifications</p>
+                    <div className="notif-empty">
+                      <FontAwesomeIcon icon={faBellSlash} />
+                      <p>
+                        {notifFilter === 'unread'
+                          ? 'No unread notifications'
+                          : notifFilter === 'read'
+                          ? 'No read notifications'
+                          : 'No notifications yet'}
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
             </div>
           )}
 
-          {/* ── Referral ─────────────────────────────────────────────────────── */}
           {activeSection === 'referral' && (
             <div className="referral-section">
               <div className="section-card">
@@ -1264,22 +1861,60 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Profile ──────────────────────────────────────────────────────── */}
+          {/* ── Profile ── FULLY WIRED to backend via updateProfile() */}
           {activeSection === 'profile' && (
             <div className="profile-section">
               <div className="section-card">
                 <h3>Personal Information</h3>
-                <form className="profile-form" onSubmit={(e) => e.preventDefault()}>
+                <form className="profile-form" onSubmit={handleProfileSave}>
                   <div className="form-row">
-                    <div className="form-group"><label>Full Name</label><input type="text" defaultValue={user.name} /></div>
-                    <div className="form-group"><label>Email Address</label><input type="email" defaultValue={user.email} disabled /></div>
+                    <div className="form-group">
+                      <label>Full Name</label>
+                      <input
+                        type="text"
+                        value={profileName}
+                        onChange={(e) => setProfileName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Email Address</label>
+                      <input type="email" value={user.email} disabled />
+                    </div>
                   </div>
                   <div className="form-row">
-                    <div className="form-group"><label>Phone Number</label><input type="tel" defaultValue={user.phone || ''} /></div>
-                    <div className="form-group"><label>Country</label><input type="text" defaultValue={user.country || ''} /></div>
+                    <div className="form-group">
+                      <label>Phone Number</label>
+                      <input
+                        type="tel"
+                        value={profilePhone}
+                        onChange={(e) => setProfilePhone(e.target.value)}
+                        placeholder="Enter phone number"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Country</label>
+                      <input
+                        type="text"
+                        value={profileCountry}
+                        onChange={(e) => setProfileCountry(e.target.value)}
+                        placeholder="Enter country"
+                      />
+                    </div>
                   </div>
-                  <div className="form-group"><label>Address</label><input type="text" defaultValue={user.address || ''} /></div>
-                  <button type="submit" className="btn-primary"><FontAwesomeIcon icon={faSave} /> Save Changes</button>
+                  <div className="form-group">
+                    <label>Address</label>
+                    <input
+                      type="text"
+                      value={profileAddress}
+                      onChange={(e) => setProfileAddress(e.target.value)}
+                      placeholder="Enter address"
+                    />
+                  </div>
+                  <button type="submit" className="btn-primary" disabled={profileSubmitting}>
+                    <FontAwesomeIcon icon={profileSubmitting ? faSpinner : faSave} spin={profileSubmitting} />
+                    {profileSubmitting ? ' Saving...' : ' Save Changes'}
+                  </button>
                 </form>
               </div>
               <div className="section-card">
@@ -1294,30 +1929,247 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* ── Security ─────────────────────────────────────────────────────── */}
+          {/* ── Security ──────────────────────────────────────────────────── */}
           {activeSection === 'security' && (
             <div className="security-section">
+
+              {/* Change Password */}
               <div className="section-card">
                 <h3>Change Password</h3>
-                <form className="security-form" onSubmit={(e) => e.preventDefault()}>
-                  <div className="form-group"><label>Current Password</label><input type="password" placeholder="Enter current password" /></div>
-                  <div className="form-group"><label>New Password</label><input type="password" placeholder="Enter new password" /></div>
-                  <div className="form-group"><label>Confirm New Password</label><input type="password" placeholder="Confirm new password" /></div>
-                  <button type="submit" className="btn-primary"><FontAwesomeIcon icon={faKey} /> Update Password</button>
+                <form className="security-form" onSubmit={handlePasswordChange}>
+                  <div className="form-group">
+                    <label>Current Password</label>
+                    <input type="password" placeholder="Enter current password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+                  </div>
+                  <div className="form-group">
+                    <label>New Password</label>
+                    <input type="password" placeholder="Enter new password (min 8 chars)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={8} />
+                  </div>
+                  <div className="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                  </div>
+                  <button type="submit" className="btn-primary" disabled={passwordSubmitting}>
+                    <FontAwesomeIcon icon={passwordSubmitting ? faSpinner : faKey} spin={passwordSubmitting} />
+                    {passwordSubmitting ? ' Updating...' : ' Update Password'}
+                  </button>
                 </form>
               </div>
+
+              {/* Two-Factor Authentication */}
               <div className="section-card">
                 <h3>Two-Factor Authentication</h3>
-                <div className="two-factor-section">
-                  <div className="two-factor-status">
-                    <div className="status-info">
-                      <FontAwesomeIcon icon={faShield} className="status-icon" />
-                      <div><h4>2FA Status</h4><p>Two-factor authentication is currently disabled</p></div>
+
+                {/* ── State: idle / already enabled ── */}
+                {twoFaStep === 'idle' && (
+                  <div className="two-factor-section">
+                    <div className="two-factor-status">
+                      <div className="status-info">
+                        <FontAwesomeIcon
+                          icon={twoFaEnabled ? faLock : faLockOpen}
+                          className="status-icon"
+                          style={{ color: twoFaEnabled ? '#27ae60' : '#555a69' }}
+                        />
+                        <div>
+                          <h4>2FA is currently {twoFaEnabled ? 'enabled' : 'disabled'}</h4>
+                          <p>
+                            {twoFaEnabled
+                              ? 'Your account is protected with an authenticator app.'
+                              : 'Add an extra layer of security using Google Authenticator or Authy.'}
+                          </p>
+                        </div>
+                      </div>
+                      {twoFaEnabled ? (
+                        <button
+                          className="btn-primary"
+                          style={{ background: '#e74c3c' }}
+                          onClick={() => { setTwoFaStep('disabling'); setTwoFaToken(''); setTwoFaPassword(''); }}
+                        >
+                          <FontAwesomeIcon icon={faLockOpen} /> Disable 2FA
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-primary"
+                          onClick={handle2FASetup}
+                          disabled={twoFaLoading}
+                        >
+                          {twoFaLoading
+                            ? <><FontAwesomeIcon icon={faSpinner} spin /> Setting up…</>
+                            : <><FontAwesomeIcon icon={faLock} /> Enable 2FA</>}
+                        </button>
+                      )}
                     </div>
-                    <button className="btn-primary"><FontAwesomeIcon icon={faLock} /> Enable 2FA</button>
                   </div>
-                </div>
+                )}
+
+                {/* ── State: setup — show QR code ── */}
+                {twoFaStep === 'setup' && (
+                  <div className="twofa-setup-flow">
+                    {/* Step indicators */}
+                    <div className="twofa-steps">
+                      <div className="twofa-step active">
+                        <div className="twofa-step-num">1</div>
+                        <span>Scan QR Code</span>
+                      </div>
+                      <div className="twofa-step-line" />
+                      <div className="twofa-step">
+                        <div className="twofa-step-num">2</div>
+                        <span>Verify Code</span>
+                      </div>
+                    </div>
+
+                    <div className="twofa-qr-block">
+                      <div className="twofa-qr-instructions">
+                        <div className="twofa-instruction-item">
+                          <div className="twofa-instruction-num">1</div>
+                          <p>Download <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone</p>
+                        </div>
+                        <div className="twofa-instruction-item">
+                          <div className="twofa-instruction-num">2</div>
+                          <p>Open the app and tap <strong>"Scan a QR code"</strong></p>
+                        </div>
+                        <div className="twofa-instruction-item">
+                          <div className="twofa-instruction-num">3</div>
+                          <p>Point your camera at the QR code on the right</p>
+                        </div>
+                      </div>
+
+                      <div className="twofa-qr-image-wrap">
+                        {twoFaQrCode
+                          ? <img src={twoFaQrCode} alt="2FA QR Code" className="twofa-qr-img" />
+                          : <div className="twofa-qr-placeholder"><FontAwesomeIcon icon={faQrcode} /></div>
+                        }
+                        <p className="twofa-qr-label">Scan with your authenticator app</p>
+                      </div>
+                    </div>
+
+                    {/* Manual entry fallback */}
+                    <div className="twofa-manual-key">
+                      <p className="twofa-manual-label">Can't scan? Enter this key manually:</p>
+                      <div className="twofa-key-box">
+                        <code className="twofa-key-text">{twoFaSecret}</code>
+                        <button type="button" className="btn-icon twofa-copy-btn" onClick={copySecret} title="Copy key">
+                          <FontAwesomeIcon icon={secretCopied ? faCheck : faCopy} style={{ color: secretCopied ? '#27ae60' : undefined }} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="twofa-action-row">
+                      <button type="button" className="btn-text" onClick={handle2FACancel}>Cancel</button>
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={() => setTwoFaStep('verify')}
+                      >
+                        I've scanned it — Next <FontAwesomeIcon icon={faCheck} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── State: verify — enter the first TOTP code ── */}
+                {twoFaStep === 'verify' && (
+                  <div className="twofa-setup-flow">
+                    {/* Step indicators */}
+                    <div className="twofa-steps">
+                      <div className="twofa-step done">
+                        <div className="twofa-step-num"><FontAwesomeIcon icon={faCheck} /></div>
+                        <span>Scan QR Code</span>
+                      </div>
+                      <div className="twofa-step-line done" />
+                      <div className="twofa-step active">
+                        <div className="twofa-step-num">2</div>
+                        <span>Verify Code</span>
+                      </div>
+                    </div>
+
+                    <div className="twofa-verify-block">
+                      <div className="twofa-verify-icon">
+                        <FontAwesomeIcon icon={faMobileAlt} />
+                      </div>
+                      <h4 className="twofa-verify-title">Enter the 6-digit code</h4>
+                      <p className="twofa-verify-sub">Open your authenticator app and enter the current code for Wallstreet Investment</p>
+
+                      <form onSubmit={handle2FAVerify} className="twofa-verify-form">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]{6}"
+                          maxLength={6}
+                          placeholder="000000"
+                          className="twofa-code-input"
+                          value={twoFaToken}
+                          onChange={(e) => setTwoFaToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          autoFocus
+                          required
+                        />
+                        <div className="twofa-action-row">
+                          <button type="button" className="btn-text" onClick={() => setTwoFaStep('setup')}>← Back</button>
+                          <button type="submit" className="btn-primary" disabled={twoFaLoading || twoFaToken.length !== 6}>
+                            {twoFaLoading
+                              ? <><FontAwesomeIcon icon={faSpinner} spin /> Verifying…</>
+                              : <><FontAwesomeIcon icon={faShield} /> Activate 2FA</>}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── State: disabling — confirm password + code ── */}
+                {twoFaStep === 'disabling' && (
+                  <div className="twofa-setup-flow">
+                    <div className="twofa-disable-warning">
+                      <FontAwesomeIcon icon={faExclamationTriangle} />
+                      <div>
+                        <h4>Disable Two-Factor Authentication</h4>
+                        <p>This will remove 2FA protection from your account. Enter your password and a current 2FA code to confirm.</p>
+                      </div>
+                    </div>
+                    <form onSubmit={handle2FADisable} className="twofa-verify-form">
+                      <div className="form-group">
+                        <label>Account Password</label>
+                        <input
+                          type="password"
+                          placeholder="Enter your account password"
+                          value={twoFaPassword}
+                          onChange={(e) => setTwoFaPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Current 2FA Code</label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]{6}"
+                          maxLength={6}
+                          placeholder="6-digit code from your app"
+                          className="twofa-code-input"
+                          value={twoFaToken}
+                          onChange={(e) => setTwoFaToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          required
+                        />
+                      </div>
+                      <div className="twofa-action-row">
+                        <button type="button" className="btn-text" onClick={handle2FACancel}>Cancel</button>
+                        <button
+                          type="submit"
+                          className="btn-primary"
+                          style={{ background: '#e74c3c' }}
+                          disabled={twoFaLoading || !twoFaPassword || twoFaToken.length !== 6}
+                        >
+                          {twoFaLoading
+                            ? <><FontAwesomeIcon icon={faSpinner} spin /> Disabling…</>
+                            : <><FontAwesomeIcon icon={faLockOpen} /> Confirm Disable</>}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
+
+              {/* Security Tips */}
               <div className="section-card">
                 <h3>Security Tips</h3>
                 <div className="security-tips">
@@ -1333,6 +2185,7 @@ const Dashboard = () => {
                   ))}
                 </div>
               </div>
+
             </div>
           )}
 

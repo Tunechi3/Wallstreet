@@ -10,8 +10,9 @@ import {
   faFilter, faSync, faUserShield, faCoins
 } from '@fortawesome/free-solid-svg-icons';
 import '../AdminDashboard.css'
+import API_URL from '../config';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// const API_BASE_URL = 'http://localhost:5000/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const AdminDashboard = () => {
 
   const adminFetch = useCallback(async (endpoint, options = {}) => {
     const token = getToken();
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const res = await fetch(`${API_URL}${endpoint}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',

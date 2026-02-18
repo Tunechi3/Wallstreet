@@ -2992,3 +2992,595 @@ html {
     font-size: 1rem;
   }
 }
+/* ============================================================ */
+/* NOTIFICATIONS - SIMPLE STYLES (append to Dashboard.css)    */
+/* ============================================================ */
+
+/* Topbar bell button */
+.topbar-notif-btn {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #555a69;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.topbar-notif-btn:hover {
+  color: #1a1a1a;
+}
+
+.topbar-notif-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #e74c3c;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Page header */
+.notif-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.notif-unread-pill {
+  background: #e74c3c;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 20px;
+}
+
+.notif-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.notif-mark-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #555a69;
+}
+
+.notif-mark-all-btn:hover { color: #1a1a1a; }
+.notif-mark-all-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Filter tabs */
+.notif-filter-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.notif-tab {
+  background: #f0f2f5;
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.notif-tab:hover { background: #e0e4eb; color: #333; }
+
+.notif-tab.active {
+  background: #555a69;
+  color: white;
+}
+
+.notif-tab-count {
+  background: #e74c3c;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 8px;
+}
+
+/* Notification item */
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.notification-item:last-child { border-bottom: none; }
+
+.notification-item.unread { background: #fafbff; }
+
+/* Type border colors */
+.notification-item.success .notification-icon-wrap { color: #27ae60; }
+.notification-item.warning .notification-icon-wrap { color: #f39c12; }
+.notification-item.error   .notification-icon-wrap { color: #e74c3c; }
+.notification-item.info    .notification-icon-wrap { color: #3498db; }
+.notification-item.investment .notification-icon-wrap { color: #D4AF37; }
+
+/* Icon */
+.notification-icon-wrap {
+  color: #555a69;
+  font-size: 1.1rem;
+  padding-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.notification-icon { font-size: inherit; }
+
+/* Content */
+.notification-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.2rem 0;
+}
+
+.notification-message {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0 0 0.3rem 0;
+  line-height: 1.5;
+}
+
+.notification-time {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin: 0;
+}
+
+/* Action buttons */
+.notification-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-top: 0.1rem;
+}
+
+.notif-action-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem 0.4rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.notif-read-btn:hover  { color: #27ae60; background: #f0faf4; }
+.notif-delete-btn:hover { color: #e74c3c; background: #fdf0f0; }
+.notif-delete-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Empty & loading states */
+.notif-empty,
+.notif-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 1rem;
+  gap: 0.6rem;
+  color: #bbb;
+  font-size: 0.9rem;
+}
+
+.notif-empty svg,
+.notif-loading svg {
+  font-size: 2rem;
+}
+
+.notif-empty p,
+.notif-loading p { margin: 0; }
+
+/* Mobile */
+@media (max-width: 480px) {
+  .notification-item { padding: 0.875rem 0.5rem; gap: 0.75rem; }
+  .notif-filter-tabs { flex-wrap: wrap; }
+}
+
+
+/* ============================================================ */
+/* TWO-FACTOR AUTHENTICATION STYLES                            */
+/* Append to Dashboard.css                                     */
+/* ============================================================ */
+
+/* Setup flow wrapper */
+.twofa-setup-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+/* Step progress indicators */
+.twofa-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 0.5rem;
+}
+
+.twofa-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #aaa;
+}
+
+.twofa-step.active {
+  color: #555a69;
+  font-weight: 600;
+}
+
+.twofa-step.done {
+  color: #27ae60;
+  font-weight: 600;
+}
+
+.twofa-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: white;
+}
+
+.twofa-step.active .twofa-step-num {
+  border-color: #555a69;
+  background: #555a69;
+  color: white;
+}
+
+.twofa-step.done .twofa-step-num {
+  border-color: #27ae60;
+  background: #27ae60;
+  color: white;
+  font-size: 0.75rem;
+}
+
+.twofa-step-line {
+  flex: 1;
+  height: 2px;
+  background: #e8ecf0;
+  margin: 0 0.5rem;
+  max-width: 60px;
+}
+
+.twofa-step-line.done {
+  background: #27ae60;
+}
+
+/* QR code block */
+.twofa-qr-block {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e8ecf0;
+}
+
+.twofa-qr-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.twofa-instruction-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.twofa-instruction-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #555a69 0%, #7f88a7 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.twofa-instruction-item p {
+  font-size: 0.88rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.twofa-instruction-item strong {
+  color: #1a1a1a;
+}
+
+/* QR image */
+.twofa-qr-image-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.twofa-qr-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+  border: 3px solid white;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.twofa-qr-placeholder {
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+  background: #e8ecf0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #aaa;
+}
+
+.twofa-qr-label {
+  font-size: 0.75rem;
+  color: #999;
+  text-align: center;
+  margin: 0;
+}
+
+/* Manual key fallback */
+.twofa-manual-key {
+  padding: 1rem 1.25rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+}
+
+.twofa-manual-label {
+  font-size: 0.82rem;
+  color: #795548;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.twofa-key-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.twofa-key-text {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #333;
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #e8ecf0;
+  flex: 1;
+  word-break: break-all;
+  letter-spacing: 1px;
+}
+
+.twofa-copy-btn {
+  color: #555a69;
+  padding: 0.4rem 0.5rem;
+}
+
+.twofa-copy-btn:hover {
+  color: #D4AF37;
+}
+
+/* Action row (cancel + next/submit) */
+.twofa-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+/* Verify step */
+.twofa-verify-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.twofa-verify-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #555a69 0%, #7f88a7 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.twofa-verify-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.twofa-verify-sub {
+  font-size: 0.88rem;
+  color: #666;
+  margin: 0;
+  max-width: 340px;
+  line-height: 1.5;
+}
+
+.twofa-verify-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Big centered code input */
+.twofa-code-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e8ecf0;
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.5rem;
+  color: #1a1a1a;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.twofa-code-input:focus {
+  outline: none;
+  border-color: #555a69;
+  background: #fafbff;
+}
+
+.twofa-code-input::placeholder {
+  color: #ccc;
+  letter-spacing: 0.5rem;
+  font-weight: 400;
+}
+
+/* Disable warning banner */
+.twofa-disable-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #fdf2f2;
+  border: 1px solid #f5c6cb;
+  border-left: 4px solid #e74c3c;
+  border-radius: 8px;
+}
+
+.twofa-disable-warning svg {
+  font-size: 1.4rem;
+  color: #e74c3c;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.twofa-disable-warning h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #c0392b;
+  margin: 0 0 0.3rem 0;
+}
+
+.twofa-disable-warning p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .twofa-qr-block {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .twofa-qr-image-wrap {
+    align-items: center;
+    order: -1;
+  }
+
+  .twofa-qr-img,
+  .twofa-qr-placeholder {
+    width: 140px;
+    height: 140px;
+  }
+
+  .twofa-code-input {
+    font-size: 1.4rem;
+    letter-spacing: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .twofa-steps {
+    gap: 0.25rem;
+  }
+
+  .twofa-step span {
+    font-size: 0.78rem;
+  }
+
+  .twofa-step-line {
+    max-width: 30px;
+  }
+
+  .twofa-qr-img,
+  .twofa-qr-placeholder {
+    width: 120px;
+    height: 120px;
+  }
+
+  .twofa-code-input {
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+    padding: 0.875rem;
+  }
+
+  .twofa-action-row {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .twofa-action-row .btn-primary,
+  .twofa-action-row .btn-text {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .twofa-verify-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+}

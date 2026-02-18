@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../config';
 
 const UserContext = createContext();
 
 // API Base URL - Update this to match your backend
-const API_BASE_URL = 'http://localhost:5000/api';
+// const API_BASE_URL = 'http://localhost:5000/api';
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -33,7 +34,7 @@ export const UserProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const response = await fetch(`${API_URL}${endpoint}`, {
         ...options,
         headers,
         credentials: 'include',
