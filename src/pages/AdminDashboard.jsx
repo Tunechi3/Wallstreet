@@ -12,7 +12,7 @@ import {
 import '../AdminDashboard.css'
 import API_URL from '../config';
 
-// const API_BASE_URL = 'http://localhost:5000/api';
+
 
 const AdminDashboard = () => {
   const navigate = useNavigate();

@@ -402,7 +402,7 @@ const Dashboard = () => {
     setCancellingId(txnId);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/transactions/${txnId}/cancel`, {
+      const response = await fetch(`${API_URL}/transactions/${txnId}/cancel`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -467,7 +467,7 @@ const Dashboard = () => {
     setDeletingId(notifId);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/notifications/${notifId}`, {
+      const response = await fetch(`${API_URL}/notifications/${notifId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -697,7 +697,7 @@ const Dashboard = () => {
     setTwoFaLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/auth/2fa/setup`, {
+      const response = await fetch(`${API_URL}/auth/2fa/setup`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
@@ -723,7 +723,7 @@ const Dashboard = () => {
     setTwoFaLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/auth/2fa/verify`, {
+      const response = await fetch(`${API_URL}/auth/2fa/verify`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: twoFaToken }),
@@ -764,7 +764,7 @@ const Dashboard = () => {
     setTwoFaLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/auth/2fa/disable`, {
+      const response = await fetch(`${API_URL}/auth/2fa/disable`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: twoFaPassword, token: twoFaToken }),
