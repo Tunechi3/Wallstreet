@@ -269,7 +269,7 @@ const Dashboard = () => {
     changePassword,
   } = useUser();
   
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
   const [notifications, setNotifications] = useState([]);
