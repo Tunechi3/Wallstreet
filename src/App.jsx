@@ -12,8 +12,19 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/Adminlogin';
-
+import { useEffect } from 'react';
 function App() {
+
+  useEffect(() => {
+    var s1 = document.createElement("script");
+    var s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src = 'https://embed.tawk.to/69972064ea86291c3442488b/1jhr5d36m';
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin', '*');
+    s0.parentNode.insertBefore(s1, s0);
+  }, []);
+
   return (
     <>
       <BrowserRouter>
