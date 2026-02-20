@@ -50,12 +50,12 @@ import '../Dashboard.css';
 import API_URL from '../config';
 
 const WALLET_ADDRESSES = {
-  'Bitcoin (BTC)':  'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-  'Ethereum (ETH)': '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-  'USDT (TRC20)':   'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE',
-  'Solana (SOL)':   'YourSolanaWalletAddressHere',
-  'USDC (ERC20)':   'YourUSDCWalletAddressHere',
-  'Tron (TRX)':     'YourTronWalletAddressHere',
+  'Bitcoin (BTC)':  'bc1qd2dh37ypm4qqgx6pqm9euxfdpjjdzheanwpl95',
+  'Ethereum (ETH)': '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
+  'USDT (TRC20)':   '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
+  'Solana (SOL)':   'BnPARD4pinVAyMSmGRbdZ3w2XrZg1G7bjJsBbqxdynkj',
+  'USDC (ERC20)':   '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
+  'Tron (TRX)':     'TVeauDNhNvhE35yomVoAEVe27G2yTzyCDe',
 };
 
 const PAYMENT_METHODS = [
