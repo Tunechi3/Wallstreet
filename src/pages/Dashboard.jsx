@@ -53,7 +53,19 @@ const WALLET_ADDRESSES = {
   'Bitcoin (BTC)':  'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
   'Ethereum (ETH)': '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
   'USDT (TRC20)':   'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE',
+  'Solana (SOL)':   'YourSolanaWalletAddressHere',
+  'USDC (ERC20)':   'YourUSDCWalletAddressHere',
+  'Tron (TRX)':     'YourTronWalletAddressHere',
 };
+
+const PAYMENT_METHODS = [
+  'Bitcoin (BTC)',
+  'Ethereum (ETH)',
+  'USDT (TRC20)',
+  'Solana (SOL)',
+  'USDC (ERC20)',
+  'Tron (TRX)',
+];
 
 const INVESTMENT_PLANS = [
   // ── DAILY PLAN ─────────────────────────────────────────────────────────────
@@ -1453,7 +1465,7 @@ const Dashboard = () => {
                   <div className="form-group">
                     <label>Payment Method</label>
                     <div className="payment-methods">
-                      {['Bitcoin (BTC)', 'Ethereum (ETH)', 'USDT (TRC20)'].map(method => (
+                      {PAYMENT_METHODS.map(method => (
                         <div className="payment-method" key={method}>
                           <input type="radio" name="payment" id={method} value={method} checked={depositMethod === method} onChange={(e) => setDepositMethod(e.target.value)} />
                           <label htmlFor={method}><FontAwesomeIcon icon={faCreditCard} /><span>{method}</span></label>
@@ -1536,9 +1548,9 @@ const Dashboard = () => {
                   <div className="form-group">
                     <label>Withdrawal Method</label>
                     <select value={withdrawMethod} onChange={(e) => setWithdrawMethod(e.target.value)} required>
-                      <option>Bitcoin (BTC)</option>
-                      <option>Ethereum (ETH)</option>
-                      <option>USDT (TRC20)</option>
+                      {PAYMENT_METHODS.map(method => (
+                        <option key={method} value={method}>{method}</option>
+                      ))}
                     </select>
                   </div>
                   {WALLET_ADDRESSES[withdrawMethod] && (
