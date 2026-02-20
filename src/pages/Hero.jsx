@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Hero = () => {
   return (
@@ -23,7 +24,9 @@ const Hero = () => {
           </p>
 
           {/* CTA Button */}
-          <button className="hero-cta">Get Started</button>
+          <Link to="/signup">
+            <button className="hero-cta">Get Started</button>
+          </Link>
         </div>
       </section>
 

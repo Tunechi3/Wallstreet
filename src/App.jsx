@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/Adminlogin';
 import { useEffect } from 'react';
+import Aboutpage from './pages/Aboutpage';
+
 function App() {
 
   useEffect(() => {
@@ -35,6 +37,7 @@ function App() {
               <Route path="/" element={<Landingpage />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/about" element={<Aboutpage />} />
 
               {/* Protected Dashboard Routes */}
               <Route

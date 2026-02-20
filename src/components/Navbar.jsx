@@ -88,18 +88,8 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="navbar-item">
-                <Link to="/invest" className="navbar-link" onClick={closeMenu}>
-                  Invest
-                </Link>
-              </li>
-              <li className="navbar-item">
-                <Link to="/contact" className="navbar-link" onClick={closeMenu}>
-                  Contact
-                </Link>
-              </li>
-              <li className="navbar-item">
-                <Link to="/faq" className="navbar-link" onClick={closeMenu}>
-                  FAQ
+                <Link to="/about" className="navbar-link" onClick={closeMenu}>
+                  About
                 </Link>
               </li>
               <li className="navbar-item">
