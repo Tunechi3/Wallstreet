@@ -52,7 +52,7 @@ import API_URL from '../config';
 const WALLET_ADDRESSES = {
   'Bitcoin (BTC)':  'bc1qd2dh37ypm4qqgx6pqm9euxfdpjjdzheanwpl95',
   'Ethereum (ETH)': '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
-  'USDT (TRC20)':   '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
+  'USDT (ERC20)':   '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
   'Solana (SOL)':   'BnPARD4pinVAyMSmGRbdZ3w2XrZg1G7bjJsBbqxdynkj',
   'USDC (ERC20)':   '0xf6b8b7E0360B0F30e0CaFE3C204491F06f271D24',
   'Tron (TRX)':     'TVeauDNhNvhE35yomVoAEVe27G2yTzyCDe',
@@ -61,7 +61,7 @@ const WALLET_ADDRESSES = {
 const PAYMENT_METHODS = [
   'Bitcoin (BTC)',
   'Ethereum (ETH)',
-  'USDT (TRC20)',
+  'USDT (ERC20)',
   'Solana (SOL)',
   'USDC (ERC20)',
   'Tron (TRX)',
