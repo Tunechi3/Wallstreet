@@ -431,10 +431,10 @@ const Aboutus = () => {
                           </p>
                           <div className="testimonial-author">
                               <div className="author-avatar">
-                                  <span>EP</span>
+                                  <span>TA</span>
                               </div>
                               <div className="author-info">
-                                  <div className="author-name">Mommy Dayo</div>
+                                  <div className="author-name">Tricia Ashley</div>
                                   <div className="author-detail">Investor since 2023</div>
                               </div>
                           </div>
@@ -451,10 +451,10 @@ const Aboutus = () => {
                           </p>
                           <div className="testimonial-author">
                               <div className="author-avatar">
-                                  <span>DA</span>
+                                  <span>DW</span>
                               </div>
                               <div className="author-info">
-                                  <div className="author-name">Daddy Dayo</div>
+                                  <div className="author-name">Daniel Willliams</div>
                                   <div className="author-detail">Pro Plan Member</div>
                               </div>
                           </div>
@@ -471,10 +471,10 @@ const Aboutus = () => {
                           </p>
                           <div className="testimonial-author">
                               <div className="author-avatar">
-                                  <span>LM</span>
+                                  <span>AK</span>
                               </div>
                               <div className="author-info">
-                                  <div className="author-name">Adekunle Gold</div>
+                                  <div className="author-name">Alice Kent</div>
                                   <div className="author-detail">Standard Plan Member</div>
                               </div>
                           </div>

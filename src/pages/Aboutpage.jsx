@@ -545,22 +545,22 @@ const Aboutpage = () => {
             {[
               {
                 text: 'I\'ve been with Wallstreet Trade for two years. The consistency of returns is what keeps me here — week after week, it delivers exactly what it promises. The transparency is unmatched.',
-                name: 'Mommy Dayo',
+                name: 'Tricia Ashley',
                 detail: 'Investor since 2023 · Standard Plan',
-                initials: 'MD',
+                initials: 'TA',
                 highlight: true,
               },
               {
                 text: 'As a former skeptic of online investment platforms, what won me over was their security documentation and third-party audit reports. Once I saw that, I was in. Haven\'t looked back.',
-                name: 'Daddy Dayo',
+                name: 'Daniel Willliams',
                 detail: 'Pro Plan Member · 18 months',
-                initials: 'DD',
+                initials: 'DW',
               },
               {
                 text: 'The expert team really knows what they\'re doing. My portfolio has grown steadily and the detailed activity logs on the dashboard let me see exactly what\'s happening with my money.',
-                name: 'Adekunle Gold',
+                name: 'Alice Kent',
                 detail: 'Standard Plan Member · 2 years',
-                initials: 'AG',
+                initials: 'AK',
               },
             ].map((t, i) => (
               <div className={`ap-testimonial-card ${t.highlight ? 'ap-testimonial-featured' : ''}`} key={i}>
