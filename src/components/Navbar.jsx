@@ -35,7 +35,8 @@ const Navbar = () => {
         {/* Company Logo */}
         <div className="navbar-logo">
           <Link to="/" className="company-name" onClick={closeMenu}>
-            Wallstreet
+          <img src="/images/wallstreets_trade_icon.svg" alt="Wallstreets Trade" width="32" height="30" />
+            Wallstreets
           </Link>
         </div>
 
@@ -90,6 +91,21 @@ const Navbar = () => {
               <li className="navbar-item">
                 <Link to="/about" className="navbar-link" onClick={closeMenu}>
                   About
+                </Link>
+              </li>
+              <li className="navbar-item">
+                <Link to="/invest" className="navbar-link" onClick={closeMenu}>
+                  Invest
+                </Link>
+              </li>
+              <li className="navbar-item">
+                <Link to="/faq" className="navbar-link" onClick={closeMenu}>
+                  FAQ
+                </Link>
+              </li>
+              <li className="navbar-item">
+                <Link to="/career" className="navbar-link" onClick={closeMenu}>
+                  Careers
                 </Link>
               </li>
               <li className="navbar-item">

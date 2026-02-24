@@ -14,6 +14,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/Adminlogin';
 import { useEffect } from 'react';
 import Aboutpage from './pages/Aboutpage';
+import FAQ from './pages/Faq';
+import Career from './pages/Career';
+import Investment from './pages/Investment';
 
 function App() {
 
@@ -38,6 +41,9 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/about" element={<Aboutpage />} />
+              <Route path="/invest" element={<Investment />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/career" element={<Career />} />
 
               {/* Protected Dashboard Routes */}
               <Route
@@ -82,7 +88,18 @@ function App() {
             draggable
             pauseOnHover
             theme="light"
-          />
+            style={{
+              width: "auto",
+              maxWidth: "300px",
+              right: "1rem",
+              top: "1rem",
+              left:"1rem",
+            }}
+            toastStyle={{
+              fontSize: "0.75rem",
+              padding: "0.75rem 1rem",
+            }}
+/>
         </UserProvider>
       </BrowserRouter>
     </>

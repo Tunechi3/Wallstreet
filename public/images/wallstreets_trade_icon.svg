@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A1628;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#112240;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A9EFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A6EFF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background square with rounded corners -->
+  <rect x="0" y="0" width="80" height="80" rx="16" fill="url(#bgGrad)"/>
+
+  <!-- Inner border -->
+  <rect x="0" y="0" width="80" height="80" rx="16" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.1"/>
+
+  <!-- Subtle grid lines -->
+  <line x1="12" y1="62" x2="68" y2="62" stroke="#FFFFFF" stroke-width="0.5" opacity="0.1"/>
+  <line x1="12" y1="48" x2="68" y2="48" stroke="#FFFFFF" stroke-width="0.5" opacity="0.1"/>
+  <line x1="12" y1="34" x2="68" y2="34" stroke="#FFFFFF" stroke-width="0.5" opacity="0.1"/>
+
+  <!-- Area fill under chart line -->
+  <polygon
+    points="12,62 12,54 28,46 40,50 54,36 68,22 68,62"
+    fill="url(#accentGrad)" opacity="0.15"/>
+
+  <!-- Main trend line -->
+  <polyline
+    points="12,54 28,46 40,50 54,36 68,22"
+    fill="none"
+    stroke="url(#accentGrad)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+
+  <!-- Data point dots -->
+  <circle cx="12" cy="54" r="2.5" fill="#4A9EFF"/>
+  <circle cx="28" cy="46" r="2.5" fill="#4A9EFF"/>
+  <circle cx="40" cy="50" r="2.5" fill="#4A9EFF"/>
+  <circle cx="54" cy="36" r="2.5" fill="#4A9EFF"/>
+
+  <!-- Last dot highlighted (white ring) -->
+  <circle cx="68" cy="22" r="4.5" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="68" cy="22" r="2.5" fill="#1A6EFF"/>
+
+  <!-- Small upward arrow above last dot -->
+  <polyline points="63,16 68,11 73,16" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+
+</svg>

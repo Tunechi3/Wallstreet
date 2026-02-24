@@ -107,15 +107,15 @@ const Signup = () => {
             </div>
 
             {/* Google Signup Button */}
-            <button className="google-signup-btn" type="button" onClick={handleGoogleSignup}>
+            {/* <button className="google-signup-btn" type="button" onClick={handleGoogleSignup}>
               <FontAwesomeIcon icon={faGoogle} />
               <span>Sign up with Google</span>
-            </button>
+            </button> */}
 
             {/* Divider */}
-            <div className="divider">
+            {/* <div className="divider">
               <span>or sign up with email</span>
-            </div>
+            </div> */}
 
             {/* Signup Form with Formik */}
             <Formik
