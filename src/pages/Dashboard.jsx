@@ -1682,7 +1682,7 @@ const Dashboard = () => {
                       ))}
                     </div>
                   </div>
-                  {WALLET_ADDRESSES[depositMethod] && (
+                  {/* {WALLET_ADDRESSES[depositMethod] && (
                     <div className="form-group">
                       <label>Send {depositMethod} to this address</label>
                       <div className="referral-link-box">
@@ -1693,7 +1693,7 @@ const Dashboard = () => {
                       </div>
                       <p className="form-hint">Send the exact deposit amount to the address above, then submit this form.</p>
                     </div>
-                  )}
+                  )} */}
                   <div className="form-group">
                     <label>Your Wallet Address (Optional)</label>
                     <input type="text" placeholder="Enter your sending wallet address (optional)" value={depositWallet} onChange={(e) => setDepositWallet(e.target.value)} />
@@ -1762,7 +1762,7 @@ const Dashboard = () => {
                       ))}
                     </select>
                   </div>
-                  {WALLET_ADDRESSES[withdrawMethod] && (
+                  {/* {WALLET_ADDRESSES[withdrawMethod] && (
                     <div className="form-group">
                       <label>Our {withdrawMethod} Receiving Address</label>
                       <div className="referral-link-box">
@@ -1773,10 +1773,10 @@ const Dashboard = () => {
                       </div>
                       <p className="form-hint">This is the address your funds will be sent to upon approval.</p>
                     </div>
-                  )}
+                  )} */}
                   <div className="form-group">
-                    <label>Your Wallet Address / Bank Account</label>
-                    <input type="text" placeholder="Enter your wallet address or bank account" value={withdrawWallet} onChange={(e) => setWithdrawWallet(e.target.value)} required />
+                    <label>Your Wallet Address</label>
+                    <input type="text" placeholder="Enter your wallet address" value={withdrawWallet} onChange={(e) => setWithdrawWallet(e.target.value)} required />
                   </div>
                   <button type="submit" className="btn-primary btn-block" disabled={isSubmitting}>
                     <FontAwesomeIcon icon={faMoneyBillTransfer} /> {isSubmitting ? 'Processing...' : 'Request Withdrawal'}
