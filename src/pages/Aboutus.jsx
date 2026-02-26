@@ -23,7 +23,7 @@ const Aboutus = () => {
                   <div className="about-us-content">
                       <h1 className="about-label">ABOUT US</h1>
                       <h2 className="about-title">
-                          Trusted by over 220,000 prop firm traders worldwide.
+                          Trusted by over 60,000 firm traders worldwide.
                       </h2>
                       <p className="about-description">
                           Wallstreet Trade is a modern investment platform built to provide individuals with accessible, structured, and performance-driven trading opportunities. 
@@ -358,7 +358,7 @@ const Aboutus = () => {
                               </svg>
                           </div>
                           <div className="stat-content">
-                              <div className="stat-number">$24.8M+</div>
+                              <div className="stat-number">$8.5M+</div>
                               <div className="stat-label">Total Payouts</div>
                               <div className="stat-description">Successfully distributed to investors</div>
                           </div>
@@ -507,7 +507,7 @@ const Aboutus = () => {
                               </svg>
                           </div>
                           <div className="faq-answer">
-                              <p>Withdrawals are processed quickly and securely through our automated system. Once your investment cycle completes, you can initiate a withdrawal request directly from your dashboard. We support multiple withdrawal methods including bank transfers and digital payment platforms. Standard withdrawals are processed within 24-48 hours on business days. There are no hidden fees, and you'll receive the full amount shown in your account balance. For security purposes, withdrawals are sent to the same payment method used for your initial deposit.</p>
+                              <p>Withdrawals are processed quickly and securely through our automated system. Once your investment cycle completes, you can initiate a withdrawal request directly from your dashboard. We support multiple withdrawal methods including bank transfers and digital payment platforms. Standard withdrawals are processed within 2 hours on business days. There are no hidden fees, and you'll receive the full amount shown in your account balance. For security purposes, withdrawals are sent to the same payment method used for your initial deposit.</p>
                           </div>
                       </div>
 
@@ -531,7 +531,7 @@ const Aboutus = () => {
                               </svg>
                           </div>
                           <div className="faq-answer">
-                              <p>We offer flexible investment plans to accommodate different capital levels. Our minimum investment starts at $500, making professional trading accessible to a wide range of investors. Each plan tier offers different return potentials and investment durations. Higher investment amounts may qualify for premium plans with enhanced features and dedicated account management. All plan details, including expected returns and cycle durations, are clearly outlined before you commit. You can start with a smaller amount and scale up as you become more comfortable with our platform.</p>
+                              <p>We offer flexible investment plans to accommodate different capital levels. Our minimum investment starts at $100, making professional trading accessible to a wide range of investors. Each plan tier offers different return potentials and investment durations. Higher investment amounts may qualify for premium plans with enhanced features and dedicated account management. All plan details, including expected returns and cycle durations, are clearly outlined before you commit. You can start with a smaller amount and scale up as you become more comfortable with our platform.</p>
                           </div>
                       </div>
                   </div>

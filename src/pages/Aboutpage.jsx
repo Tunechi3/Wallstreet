@@ -52,8 +52,8 @@ const StatCounter = ({ value, suffix, prefix, label, description, icon }) => {
   const count = useCounter(numVal, 2200, inView);
 
   const display = () => {
-    if (value === '220K+') return inView ? `${Math.floor(count)}K+` : '0K+';
-    if (value === '$24.8M+') return inView ? `$${count.toFixed(1)}M+` : '$0M+';
+    if (value === '60K+') return inView ? `${Math.floor(count)}K+` : '0K+';
+    if (value === '$8.5M+') return inView ? `$${count.toFixed(1)}M+` : '$0M+';
     if (value === '18,542') return inView ? count.toLocaleString() : '0';
     if (value === '1.2M+') return inView ? `${count.toFixed(1)}M+` : '0M+';
     if (value === '99.8%') return inView ? `${count.toFixed(1)}%` : '0%';
