@@ -48,18 +48,25 @@ const useInView = (threshold = 0.2) => {
 // ── Stat Counter Component ───────────────────────────────────────────────────
 const StatCounter = ({ value, suffix, prefix, label, description, icon }) => {
   const [ref, inView] = useInView(0.3);
-  const numVal = parseFloat(value.toString().replace(/[^0-9.]/g, ''));
+
+  // Override target values for specific stats
+  const getTargetNum = () => {
+    if (value === '220K+') return 60;
+    if (value === '$24.8M+') return 8.5;
+    return parseFloat(value.toString().replace(/[^0-9.]/g, ''));
+  };
+
+  const numVal = getTargetNum();
   const count = useCounter(numVal, 2200, inView);
 
   const display = () => {
-    if (value === '60K+') return inView ? `${Math.floor(count)}K+` : '0K+';
-    if (value === '$8.5M+') return inView ? `$${count.toFixed(1)}M+` : '$0M+';
+    if (value === '220K+') return inView ? `${Math.floor(count)}K+` : '0K+';
+    if (value === '$24.8M+') return inView ? `$${count.toFixed(1)}M+` : '$0M+';
     if (value === '18,542') return inView ? count.toLocaleString() : '0';
     if (value === '1.2M+') return inView ? `${count.toFixed(1)}M+` : '0M+';
     if (value === '99.8%') return inView ? `${count.toFixed(1)}%` : '0%';
     return inView ? count : 0;
   };
-
   return (
     <div className="ap-stat-item" ref={ref}>
       <div className="ap-stat-icon">{icon}</div>
