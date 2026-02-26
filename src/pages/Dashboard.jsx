@@ -43,6 +43,7 @@ import {
   faTimesCircle,
   faMobileAlt,
   faQrcode,
+  faHourglassHalf,
 } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../context/UserContext';
 import { toast } from 'react-toastify';
@@ -214,6 +215,191 @@ const timeAgo = (dateStr) => {
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
+// ── Countdown Timer Hook ───────────────────────────────────────────────────
+const useCountdown = (targetTime) => {
+  const [timeLeft, setTimeLeft] = useState(null);
+
+  useEffect(() => {
+    if (!targetTime) return;
+    const tick = () => {
+      const diff = Math.max(0, targetTime - Date.now());
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft({ h, m, s, expired: diff === 0 });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [targetTime]);
+
+  return timeLeft;
+};
+
+// ── Deposit Payment Modal Component ───────────────────────────────────────
+const DepositPaymentModal = ({ depositInfo, onClose }) => {
+  const [copiedKey, setCopiedKey] = useState(null);
+  const expiresAt = depositInfo?.expiresAt;
+  const timeLeft = useCountdown(expiresAt);
+
+  const copyToClipboard = (text, key) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  if (!depositInfo) return null;
+
+  const pad = (n) => String(n).padStart(2, '0');
+
+  return (
+    <div className="invest-modal-overlay" onClick={onClose}>
+      <div className="invest-modal deposit-payment-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="invest-modal-header" style={{ borderColor: '#27ae60' }}>
+          <div className="invest-modal-title">
+            <div className="invest-modal-icon" style={{ background: '#27ae60' }}>
+              <FontAwesomeIcon icon={faHourglassHalf} />
+            </div>
+            <div>
+              <h3>Payment Pending</h3>
+              <span className="status-badge pending">Awaiting Confirmation</span>
+            </div>
+          </div>
+          <button className="invest-modal-close" onClick={onClose}>
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+
+        <div className="invest-modal-body">
+
+          {/* Countdown Timer */}
+          <div className="deposit-modal-timer">
+            <div className="deposit-timer-label">
+              <FontAwesomeIcon icon={faClock} />
+              <span>Payment window expires in</span>
+            </div>
+            {timeLeft && !timeLeft.expired ? (
+              <div className="deposit-timer-display">
+                <div className="deposit-timer-block">
+                  <span className="deposit-timer-num">{pad(timeLeft.h)}</span>
+                  <span className="deposit-timer-unit">hrs</span>
+                </div>
+                <span className="deposit-timer-colon">:</span>
+                <div className="deposit-timer-block">
+                  <span className="deposit-timer-num">{pad(timeLeft.m)}</span>
+                  <span className="deposit-timer-unit">min</span>
+                </div>
+                <span className="deposit-timer-colon">:</span>
+                <div className="deposit-timer-block">
+                  <span className="deposit-timer-num">{pad(timeLeft.s)}</span>
+                  <span className="deposit-timer-unit">sec</span>
+                </div>
+              </div>
+            ) : (
+              <div className="deposit-timer-expired">
+                <FontAwesomeIcon icon={faExclamationCircle} /> Timer expired
+              </div>
+            )}
+          </div>
+
+          {/* Transaction Summary */}
+          <div className="invest-modal-summary">
+            <div className="invest-summary-item">
+              <span className="invest-summary-label">Amount</span>
+              <span className="invest-summary-val" style={{ color: '#27ae60' }}>
+                ${depositInfo.amount?.toLocaleString()}
+              </span>
+            </div>
+            <div className="invest-summary-item">
+              <span className="invest-summary-label">Method</span>
+              <span className="invest-summary-val">{depositInfo.method}</span>
+            </div>
+            <div className="invest-summary-item">
+              <span className="invest-summary-label">Status</span>
+              <span className="invest-summary-val">
+                <span className="status-badge pending">Pending</span>
+              </span>
+            </div>
+            <div className="invest-summary-item">
+              <span className="invest-summary-label">Transaction ID</span>
+              <span className="invest-summary-val deposit-txn-id">
+                {String(depositInfo.transactionId).slice(-10)}…
+              </span>
+            </div>
+          </div>
+
+          {/* Wallet Address */}
+          <div className="deposit-modal-wallet-section">
+            <p className="deposit-modal-wallet-label">
+              Send <strong>${depositInfo.amount?.toLocaleString()}</strong> of <strong>{depositInfo.method}</strong> to:
+            </p>
+            <div className="deposit-modal-wallet-box">
+              <span className="deposit-modal-wallet-addr">{depositInfo.walletAddress}</span>
+              <button
+                className="btn-primary deposit-modal-copy-btn"
+                onClick={() => copyToClipboard(depositInfo.walletAddress, 'wallet')}
+              >
+                <FontAwesomeIcon icon={faCopy} />
+                {copiedKey === 'wallet' ? ' Copied!' : ' Copy'}
+              </button>
+            </div>
+            <p className="deposit-modal-wallet-hint">
+              ⚠️ Send the <strong>exact amount</strong> shown above. Incorrect amounts may cause delays.
+            </p>
+          </div>
+
+          {/* Full Transaction ID */}
+          <div className="deposit-modal-txnid-section">
+            <p className="deposit-modal-wallet-label">Full Transaction Reference ID:</p>
+            <div className="deposit-modal-wallet-box">
+              <span className="deposit-modal-wallet-addr" style={{ fontSize: '0.78rem' }}>
+                {depositInfo.transactionId}
+              </span>
+              <button
+                className="btn-primary deposit-modal-copy-btn"
+                onClick={() => copyToClipboard(depositInfo.transactionId, 'txnid')}
+              >
+                <FontAwesomeIcon icon={faCopy} />
+                {copiedKey === 'txnid' ? ' Copied!' : ' Copy'}
+              </button>
+            </div>
+          </div>
+
+          {/* Steps */}
+          <div className="deposit-modal-steps">
+            <div className="deposit-modal-step">
+              <div className="deposit-modal-step-num">1</div>
+              <p>Copy the wallet address above</p>
+            </div>
+            <div className="deposit-modal-step">
+              <div className="deposit-modal-step-num">2</div>
+              <p>Send exactly <strong>${depositInfo.amount?.toLocaleString()}</strong> from your wallet</p>
+            </div>
+            <div className="deposit-modal-step">
+              <div className="deposit-modal-step-num">3</div>
+              <p>Wait for admin approval — usually <strong>10–30 minutes</strong></p>
+            </div>
+          </div>
+
+          {/* Info box */}
+          <div className="deposit-modal-info-box">
+            <FontAwesomeIcon icon={faInfoCircle} />
+            <p>
+              Your balance will be credited automatically once the admin confirms your payment.
+              Keep this window open or note your Transaction ID for reference.
+            </p>
+          </div>
+
+          <button className="btn-primary btn-block" onClick={onClose} style={{ justifyContent: 'center', marginTop: '0.25rem' }}>
+            <FontAwesomeIcon icon={faCheck} /> I've Sent the Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -244,6 +430,9 @@ const Dashboard = () => {
   const [depositAmount, setDepositAmount] = useState('');
   const [depositMethod, setDepositMethod] = useState('Bitcoin (BTC)');
   const [depositWallet, setDepositWallet] = useState('');
+
+  // ── Deposit Payment Modal State ────────────────────────────────────────────
+  const [depositPaymentModal, setDepositPaymentModal] = useState(null);
 
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [withdrawMethod, setWithdrawMethod] = useState('Bitcoin (BTC)');
@@ -559,6 +748,7 @@ const Dashboard = () => {
     }
   };
 
+  // ── Updated handleDeposit — shows payment modal on success ────────────────
   const handleDeposit = async (e) => {
     e.preventDefault();
     if (!depositAmount || parseFloat(depositAmount) < 100) {
@@ -569,8 +759,18 @@ const Dashboard = () => {
     try {
       const result = await createDeposit(parseFloat(depositAmount), depositMethod, depositWallet || null);
       if (result.success) {
-        toast.success('Deposit request created successfully! Please wait for confirmation.');
-        setDepositAmount(''); setDepositWallet('');
+        // Build modal data from backend response + local wallet address
+        const walletAddr = result.data?.paymentDetails?.walletAddress || WALLET_ADDRESSES[depositMethod];
+        setDepositPaymentModal({
+          transactionId: result.data?.transactionId,
+          amount: result.data?.amount || parseFloat(depositAmount),
+          method: depositMethod,
+          walletAddress: walletAddr,
+          status: 'pending',
+          expiresAt: Date.now() + 60 * 60 * 1000, // 1 hour from now
+        });
+        setDepositAmount('');
+        setDepositWallet('');
         await loadDashboardData();
       } else {
         toast.error(result.message || 'Failed to create deposit request');
@@ -814,6 +1014,14 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+
+      {/* ── Deposit Payment Modal ─────────────────────────────────────────── */}
+      {depositPaymentModal && (
+        <DepositPaymentModal
+          depositInfo={depositPaymentModal}
+          onClose={() => setDepositPaymentModal(null)}
+        />
+      )}
 
       {investModal && (
         <div className="invest-modal-overlay" onClick={closeInvestModal}>
@@ -1464,7 +1672,8 @@ const Dashboard = () => {
                   </div>
                   <div className="form-group">
                     <label>Payment Method</label>
-                    <div className="payment-methods">
+                    {/* ── Coins side by side 2-per-row ── */}
+                    <div className="payment-methods payment-methods-grid">
                       {PAYMENT_METHODS.map(method => (
                         <div className="payment-method" key={method}>
                           <input type="radio" name="payment" id={method} value={method} checked={depositMethod === method} onChange={(e) => setDepositMethod(e.target.value)} />
@@ -1490,7 +1699,7 @@ const Dashboard = () => {
                     <input type="text" placeholder="Enter your sending wallet address (optional)" value={depositWallet} onChange={(e) => setDepositWallet(e.target.value)} />
                   </div>
                   <button type="submit" className="btn-primary btn-block" disabled={isSubmitting}>
-                    <FontAwesomeIcon icon={faArrowDown} /> {isSubmitting ? 'Processing...' : 'Proceed to Deposit'}
+                    <FontAwesomeIcon icon={faArrowDown} /> {isSubmitting ? 'Processing...' : 'Make Payment'}
                   </button>
                 </form>
               </div>
@@ -1500,7 +1709,7 @@ const Dashboard = () => {
                   {[
                     { n: 1, title: 'Select Amount & Method', body: 'Choose your deposit amount and preferred payment method' },
                     { n: 2, title: 'Copy Wallet Address', body: 'Copy the wallet address shown and send the exact amount to it' },
-                    { n: 3, title: 'Submit the Form', body: 'Click "Proceed to Deposit" to notify us of your payment' },
+                    { n: 3, title: 'Submit the Form', body: 'Click "Make Payment" to notify us of your payment' },
                     { n: 4, title: 'Confirmation', body: 'Your balance will be credited after confirmation (usually 10–30 minutes)' },
                   ].map(item => (
                     <div className="instruction-item" key={item.n}>

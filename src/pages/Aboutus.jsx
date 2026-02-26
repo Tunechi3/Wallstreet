@@ -77,7 +77,7 @@ const Aboutus = () => {
           </section>
 
           {/* Investment Plans Section */}
-          <section className="investment-plans">
+          {/* <section className="investment-plans">
               <div className="investment-plans-container">
                   <div className="plans-header">
                       <h2 className="plans-title">Investment Plans</h2>
@@ -209,7 +209,7 @@ const Aboutus = () => {
                       </div>
                   </div>
               </div>
-          </section>
+          </section> */}
 
           {/* Why Choose Wallstreet Section */}
           <section className="why-choose">
