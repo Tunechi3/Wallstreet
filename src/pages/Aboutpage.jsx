@@ -103,7 +103,7 @@ const TEAM = [
     gradient: 'linear-gradient(135deg, #3d4f63 0%, #555a69 100%)',
   },
   {
-    initials: 'RO',
+    initials: 'MS',
     name: 'Michael Saylor',
     role: 'Chief Technology Officer',
     bio: 'Former fintech architect at Stripe with expertise in high-frequency trading infrastructure and distributed systems.',
@@ -117,7 +117,7 @@ const TIMELINE = [
   { year: '2019', title: 'First 1,000 Investors', desc: 'Reached our first milestone of 1,000 active investors within just 8 months. Processed over $2M in successful payouts.' },
   { year: '2021', title: 'Platform Expansion', desc: 'Launched our proprietary trading algorithm suite and expanded to cover 12 global markets. Total payouts crossed $5M.' },
   { year: '2022', title: 'Security Overhaul', desc: 'Achieved PCI DSS compliance and implemented military-grade 256-bit encryption across all systems and transactions.' },
-  { year: '2023', title: '100K+ Community', desc: 'Surpassed 100,000 registered members. Launched our referral program and introduced tiered investment plans.' },
+  { year: '2023', title: '100K+ Community', desc: 'Surpassed 30,000 registered members. Launched our referral program and introduced tiered investment plans.' },
   { year: '2024', title: 'Global Recognition', desc: 'Recognized as one of the fastest-growing prop trading platforms. Total payouts exceeded $20M with 99.8% on-time delivery.' },
 ];
 
@@ -243,8 +243,8 @@ const Aboutpage = () => {
           </div>
           <div className="ap-hero-strip">
             {[
-              { val: '220K+', lab: 'Investors' },
-              { val: '$24.8M+', lab: 'Paid Out' },
+              { val: '60K+', lab: 'Investors' },
+              { val: '$8.5M+', lab: 'Paid Out' },
               { val: '99.8%', lab: 'On-Time' },
               { val: '6+', lab: 'Years Active' },
             ].map((s) => (
