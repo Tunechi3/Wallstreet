@@ -323,7 +323,7 @@ const Dashboard = () => {
         setUnreadCount(dashNotifs.length);
       }
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      toast.error('Failed to load dashboard data. Please refresh.');
     } finally {
       setLoading(false);
     }
@@ -1913,7 +1913,7 @@ const Dashboard = () => {
                 <div className="account-details">
                   <div className="detail-row"><span className="detail-label">Member Since</span><span className="detail-value">{new Date(user.createdAt).toLocaleDateString() || 'N/A'}</span></div>
                   <div className="detail-row"><span className="detail-label">Account Status</span><span className="detail-value"><span className="status-badge completed">{user.accountStatus || 'Active'}</span></span></div>
-                  <div className="detail-row"><span className="detail-label">Verification Status</span><span className="detail-value"><span className="status-badge completed">{user.verificationStatus || 'Unverified'}</span></span></div>
+                  {/* <div className="detail-row"><span className="detail-label">Verification Status</span><span className="detail-value"><span className="status-badge completed">{user.verificationStatus || 'Unverified'}</span></span></div> */}
                   <div className="detail-row"><span className="detail-label">Total Investments</span><span className="detail-value">${((user.totalBalance || 0) - (user.availableBalance || 0)).toLocaleString()}</span></div>
                 </div>
               </div>

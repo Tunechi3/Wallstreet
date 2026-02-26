@@ -54,21 +54,16 @@ const Signup = () => {
   // Submit Handler
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
   try {
-    console.log('📝 Signup: Submitting...', { email: values.email });
-    
     const result = await register(values);
     
-    console.log('📥 Signup: Result:', result);
-    
     if (result.success) {
-      toast.success('Account created! Please check your email to verify your account.');
+      toast.success('Account created! Welcome to Wallstreet Trade.');
       resetForm();
       navigate('/dashboard');
     } else {
       toast.error(result.message || 'Registration failed. Please try again.');
     }
   } catch (error) {
-    console.error('❌ Signup: Error:', error);
     toast.error(error.message || 'An unexpected error occurred.');
   } finally {
     setSubmitting(false);

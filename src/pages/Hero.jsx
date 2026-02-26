@@ -31,7 +31,7 @@ const Hero = () => {
       </section>
 
       {/* Crypto Slider - Now Independent */}
-      <CryptoSlider />
+      {/* <CryptoSlider /> */}
     </>
   )
 }

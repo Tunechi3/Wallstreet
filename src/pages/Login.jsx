@@ -32,11 +32,7 @@ const Login = () => {
   // Submit Handler
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log('🔐 Login: Submitting...', { email: values.email });
-      
       const result = await login(values.email, values.password);
-      
-      console.log('📥 Login: Result:', result);
       
       if (result.success) {
         toast.success('Login successful! Welcome back.');
@@ -47,7 +43,6 @@ const Login = () => {
         toast.error(result.message || 'Login failed. Please try again.');
       }
     } catch (error) {
-      console.error('❌ Login: Error:', error);
       toast.error(error.message || 'An unexpected error occurred.');
     } finally {
       setSubmitting(false);

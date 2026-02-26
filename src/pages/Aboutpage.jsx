@@ -97,7 +97,7 @@ const TEAM = [
   },
   {
     initials: 'RO',
-    name: 'Rachel Okonkwo',
+    name: 'Michael Saylor',
     role: 'Chief Technology Officer',
     bio: 'Former fintech architect at Stripe with expertise in high-frequency trading infrastructure and distributed systems.',
     gradient: 'linear-gradient(135deg, #7f88a7 0%, #D4AF37 100%)',

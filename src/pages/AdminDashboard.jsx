@@ -9,6 +9,7 @@ import {
   faArrowDown, faClock, faCheckCircle, faTimesCircle,
   faFilter, faSync, faUserShield, faCoins
 } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 import '../AdminDashboard.css'
 import API_URL from '../config';
 
@@ -98,7 +99,7 @@ const AdminDashboard = () => {
         });
       }
     } catch (err) {
-      console.error('Admin load error:', err);
+      toast.error('Failed to load admin data. Please refresh.');
     } finally {
       setLoading(false);
     }
@@ -120,9 +121,9 @@ const AdminDashboard = () => {
       await adminFetch(`/transactions/${txId}/approve-deposit`, { method: 'PATCH' });
       await loadAll();
       setModal(null);
-      alert('✅ Deposit approved and balance credited.');
+      toast.success('Deposit approved and balance credited.');
     } catch (err) {
-      alert('Error: ' + err.message);
+      toast.error('Error: ' + err.message);
     } finally {
       setActionLoading(null);
     }
@@ -137,9 +138,9 @@ const AdminDashboard = () => {
       });
       await loadAll();
       setModal(null);
-      alert(`✅ Withdrawal ${status}.`);
+      toast.success(`Withdrawal ${status}.`);
     } catch (err) {
-      alert('Error: ' + err.message);
+      toast.error('Error: ' + err.message);
     } finally {
       setActionLoading(null);
     }
@@ -151,7 +152,7 @@ const AdminDashboard = () => {
 
   const adjustBalance = async (userId) => {
     if (!adjustForm.amount || parseFloat(adjustForm.amount) <= 0) {
-      alert('Please enter a valid amount'); return;
+      toast.error('Please enter a valid amount'); return;
     }
     setActionLoading(userId);
     try {
@@ -162,9 +163,12 @@ const AdminDashboard = () => {
       await loadAll();
       setModal(null);
       setAdjustForm({ amount: '', type: 'credit', note: '' });
-      alert(`✅ Balance ${adjustForm.type === 'credit' ? 'credited' : 'debited'} successfully.`);
-    } catch (err) { alert('Error: ' + err.message); }
-    finally { setActionLoading(null); }
+      toast.success(`Balance ${adjustForm.type === 'credit' ? 'credited' : 'debited'} successfully.`);
+    } catch (err) {
+      toast.error('Error: ' + err.message);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const updateUserStatus = async (userId, status) => {
@@ -176,9 +180,12 @@ const AdminDashboard = () => {
       });
       await loadAll();
       setModal(null);
-      alert(`✅ User account ${status}.`);
-    } catch (err) { alert('Error: ' + err.message); }
-    finally { setActionLoading(null); }
+      toast.success(`User account ${status}.`);
+    } catch (err) {
+      toast.error('Error: ' + err.message);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const handleLogout = async () => {

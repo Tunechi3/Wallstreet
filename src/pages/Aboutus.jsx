@@ -10,18 +10,13 @@ const Aboutus = () => {
     <>
           <section className="about-us">
               <div className="about-us-container">
-                  {/* Video Section */}
+                  {/* Image Section */}
                   <div className="about-us-image">
-                      <video
+                      <img
                           className="about-image"
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                      >
-                          <source src="/images/man-working-with-stock-charts-minimalist-office.webm" type="video/webm" />
-                          Your browser does not support the video tag.
-                      </video>
+                          src="/images/Wallstreetimage.png"
+                          alt="About Us"
+                      />
                   </div>
 
                   {/* Content Section */}

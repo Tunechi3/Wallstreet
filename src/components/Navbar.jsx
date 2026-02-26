@@ -104,11 +104,6 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="navbar-item">
-                <Link to="/career" className="navbar-link" onClick={closeMenu}>
-                  Careers
-                </Link>
-              </li>
-              <li className="navbar-item">
                 <Link to="/login" className="navbar-link" onClick={closeMenu}>
                   <FontAwesomeIcon icon={faUser} />Login
                 </Link>

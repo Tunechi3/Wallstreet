@@ -4,9 +4,6 @@ import API_URL from '../config';
 
 const UserContext = createContext();
 
-// API Base URL - Update this to match your backend
-// const API_BASE_URL = 'http://localhost:5000/api';
-
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,7 +37,6 @@ export const UserProvider = ({ children }) => {
         credentials: 'include',
       });
 
-      // FIX: safely parse JSON — don't crash on empty/non-JSON error responses
       const text = await response.text();
       let data;
       try {
@@ -49,7 +45,6 @@ export const UserProvider = ({ children }) => {
         throw new Error(`Server error (${response.status}): ${text}`);
       }
 
-      // Handle unauthorized errors
       if (response.status === 401) {
         removeToken();
         setUser(null);
@@ -63,7 +58,6 @@ export const UserProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('API Error:', error);
       throw error;
     }
   };
@@ -71,7 +65,6 @@ export const UserProvider = ({ children }) => {
   // Register user
   const register = async (userData) => {
     try {
-      // FIX: removed duplicate API_URL prefix (apiCall already prepends it)
       const data = await apiCall('/auth/register', {
         method: 'POST',
         body: JSON.stringify(userData),
@@ -92,27 +85,19 @@ export const UserProvider = ({ children }) => {
   // Login user
   const login = async (email, password) => {
     try {
-      console.log('🔐 UserContext: Attempting login...', { email });
-
-      // FIX: removed duplicate API_URL prefix (apiCall already prepends it)
       const data = await apiCall('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
 
-      console.log('📥 UserContext: Login response:', data);
-
       if (data.status === 'success' && data.token) {
         setToken(data.token);
         setUser(data.data.user);
-        console.log('✅ UserContext: Login successful, user set:', data.data.user);
         return { success: true, user: data.data.user };
       }
 
-      console.log('❌ UserContext: Login failed:', data.message);
       return { success: false, message: data.message };
     } catch (error) {
-      console.error('❌ UserContext: Login error:', error);
       return { success: false, message: error.message };
     }
   };
@@ -158,7 +143,6 @@ export const UserProvider = ({ children }) => {
       const data = await apiCall('/dashboard/stats');
       return data;
     } catch (error) {
-      console.error('Error fetching user stats:', error);
       return { success: false, message: error.message };
     }
   };
@@ -169,7 +153,6 @@ export const UserProvider = ({ children }) => {
       const result = await fetchDashboardData();
       return result;
     } catch (error) {
-      console.error('Error refreshing user:', error);
       return { success: false };
     }
   };
@@ -180,7 +163,6 @@ export const UserProvider = ({ children }) => {
       const data = await apiCall('/investment-plans');
       return data;
     } catch (error) {
-      console.error('Error fetching investment plans:', error);
       return { success: false, message: error.message };
     }
   };
@@ -199,7 +181,6 @@ export const UserProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('Error creating investment:', error);
       return { success: false, message: error.message };
     }
   };
@@ -210,13 +191,11 @@ export const UserProvider = ({ children }) => {
       const data = await apiCall('/investments/active');
       return data;
     } catch (error) {
-      console.error('Error fetching active investments:', error);
       return { success: false, message: error.message };
     }
   };
 
-  // ✅ FIX: createDeposit now correctly checks data.success (backend returns { success: true })
-  // and also normalises the return so Dashboard always gets a consistent shape.
+  // Create deposit
   const createDeposit = async (amount, method, walletAddress) => {
     try {
       const data = await apiCall('/transactions/deposit', {
@@ -224,19 +203,17 @@ export const UserProvider = ({ children }) => {
         body: JSON.stringify({ amount, method, walletAddress }),
       });
 
-      // Backend returns { success: true, message, data: {...} }
       if (data.success) {
         await refreshUser();
       }
 
-      return data; // always return the full response so Dashboard can read data.message
+      return data;
     } catch (error) {
-      console.error('Error creating deposit:', error);
       return { success: false, message: error.message };
     }
   };
 
-  // ✅ FIX: same normalisation for createWithdrawal
+  // Create withdrawal
   const createWithdrawal = async (amount, method, walletAddress) => {
     try {
       const data = await apiCall('/transactions/withdraw', {
@@ -244,14 +221,12 @@ export const UserProvider = ({ children }) => {
         body: JSON.stringify({ amount, method, walletAddress }),
       });
 
-      // Backend returns { success: true, message, data: {...} }
       if (data.success) {
         await refreshUser();
       }
 
-      return data; // always return the full response so Dashboard can read data.message
+      return data;
     } catch (error) {
-      console.error('Error creating withdrawal:', error);
       return { success: false, message: error.message };
     }
   };
@@ -272,7 +247,6 @@ export const UserProvider = ({ children }) => {
       const data = await apiCall(endpoint);
       return data;
     } catch (error) {
-      console.error('Error fetching transactions:', error);
       return { success: false, message: error.message };
     }
   };
@@ -283,7 +257,6 @@ export const UserProvider = ({ children }) => {
       const data = await apiCall('/notifications');
       return data;
     } catch (error) {
-      console.error('Error fetching notifications:', error);
       return { success: false, message: error.message };
     }
   };
@@ -296,7 +269,6 @@ export const UserProvider = ({ children }) => {
       });
       return data;
     } catch (error) {
-      console.error('Error marking notification as read:', error);
       return { success: false, message: error.message };
     }
   };
@@ -309,7 +281,6 @@ export const UserProvider = ({ children }) => {
       });
       return data;
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
       return { success: false, message: error.message };
     }
   };
@@ -331,7 +302,6 @@ export const UserProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('Error updating profile:', error);
       return { success: false, message: error.message };
     }
   };
@@ -346,7 +316,6 @@ export const UserProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('Error changing password:', error);
       return { success: false, message: error.message };
     }
   };
@@ -366,7 +335,6 @@ export const UserProvider = ({ children }) => {
             removeToken();
           }
         } catch (error) {
-          console.error('Auth initialization error:', error);
           removeToken();
         }
       }

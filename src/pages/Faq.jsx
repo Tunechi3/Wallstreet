@@ -34,21 +34,6 @@ const FAQ = () => {
       answer: 'Creating an account is simple! Click the "Sign Up" button on the homepage, fill in your personal information including name, email, phone number, and create a secure password. Once registered, verify your email address and you can start investing immediately.'
     },
     {
-      category: 'getting-started',
-      question: 'What documents do I need to verify my account?',
-      answer: 'For KYC verification, you need a valid government-issued ID (passport, driver\'s license, or national ID card) and a recent utility bill or bank statement as proof of address. The verification process typically takes 24-48 hours.'
-    },
-    {
-      category: 'getting-started',
-      question: 'Is there a minimum age requirement?',
-      answer: 'Yes, you must be at least 18 years old to create an account and invest on Wallstreet Trade. Age verification is part of our KYC process to ensure compliance with financial regulations.'
-    },
-    {
-      category: 'investments',
-      question: 'What are the available investment plans?',
-      answer: 'We offer three investment plans: Basic Plan (minimum $500, 5% weekly returns for 4 weeks), Standard Plan (minimum $2,500, 8% weekly returns for 8 weeks), and Pro Plan (minimum $10,000, 12% weekly returns for 12 weeks). Each plan is designed to match different investment goals and risk profiles.'
-    },
-    {
       category: 'investments',
       question: 'How are returns calculated and paid?',
       answer: 'Returns are calculated based on your investment amount and plan selection. They are credited to your account weekly on the same day you made your initial investment. You can withdraw your returns at any time or reinvest them for compound growth.'
@@ -66,17 +51,17 @@ const FAQ = () => {
     {
       category: 'withdrawals',
       question: 'How do I withdraw my earnings?',
-      answer: 'Navigate to the Withdrawal section in your dashboard, enter the amount you wish to withdraw, select your preferred withdrawal method (bank transfer, PayPal, or crypto wallet), and submit your request. Withdrawals are processed within 24-48 hours.'
+      answer: 'Navigate to the Withdrawal section in your dashboard, enter the amount you wish to withdraw and submit your request. Withdrawals are processed within 24-48 hours.'
     },
     {
       category: 'withdrawals',
       question: 'Are there any withdrawal fees?',
-      answer: 'Standard withdrawals have no fees. However, expedited withdrawals (processed within 6 hours) have a 2% processing fee. Minimum withdrawal amount is $50, and there\'s no maximum limit.'
+      answer: 'Standard withdrawals have no fees. '
     },
     {
       category: 'withdrawals',
       question: 'How long does it take to receive my withdrawal?',
-      answer: 'Standard withdrawals are processed within 24-48 hours. Bank transfers may take an additional 3-5 business days depending on your bank. PayPal withdrawals are instant once processed, and crypto withdrawals typically arrive within 1 hour.'
+      answer: 'Standard withdrawals are processed within 2 hours.'
     },
     {
       category: 'withdrawals',
@@ -105,34 +90,19 @@ const FAQ = () => {
     },
     {
       category: 'general',
-      question: 'How does the referral program work?',
-      answer: 'Invite friends using your unique referral link. When they register and make their first investment, you earn 5% of their investment amount as a bonus. There\'s no limit to how many people you can refer, making it a great way to earn passive income.'
-    },
-    {
-      category: 'general',
       question: 'Can I change my investment plan after investing?',
       answer: 'Once an investment is active, the plan cannot be changed. However, you can invest in multiple plans simultaneously or wait for your current plan to mature before starting a new one with different terms.'
     },
     {
       category: 'general',
-      question: 'What payment methods do you accept?',
-      answer: 'We accept bank transfers, credit/debit cards (Visa, Mastercard, American Express), PayPal, and major cryptocurrencies including Bitcoin, Ethereum, and USDT. All transactions are processed securely through encrypted payment gateways.'
-    },
-    {
-      category: 'general',
       question: 'Do you offer customer support?',
-      answer: 'Yes! Our customer support team is available 24/7 via live chat, email (support@wallstreettrade.com), and phone. We typically respond to inquiries within 2 hours during business days and 6 hours on weekends.'
+      answer: 'Yes! Our customer support team is available 24/7 via live chat. We typically respond to inquiries within 1 hour during business days and 2 hours on weekends.'
     },
     {
       category: 'general',
       question: 'Are there any hidden fees?',
-      answer: 'No hidden fees! We believe in complete transparency. The only fees are clearly stated: 2% for expedited withdrawals and standard transaction fees for crypto payments (network dependent). Investment returns and standard withdrawals have zero fees.'
+      answer: 'No hidden fees! We believe in complete transparency.'
     },
-    {
-      category: 'general',
-      question: 'Can I invest from any country?',
-      answer: 'Wallstreet Trade is available in most countries worldwide. However, due to regulatory restrictions, we cannot accept investors from certain jurisdictions including the United States, North Korea, Iran, and Syria. Check our Terms of Service for the complete list.'
-    }
   ];
 
   const filteredFAQs = activeCategory === 'all' 
